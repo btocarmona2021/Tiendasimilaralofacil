@@ -5,7 +5,7 @@
     <p class="combo-desc">{{ combo.description }}</p>
 
     <div class="combo-products">
-      <div v-for="p in combo.products" :key="p.id" class="combo-product">
+      <div v-for="p in combo.products" :key="p.id" class="combo-product" @click="$emit('show-detail', p)">
         <div class="combo-product-img-wrap">
           <img v-if="p.image" :src="p.image" :alt="p.name" class="combo-product-img" />
           <span v-else class="combo-product-emoji">{{ p.emoji }}</span>
@@ -41,7 +41,7 @@ const props = defineProps({
   index: Number,
   inCart: Boolean,
 })
-defineEmits(['toggle'])
+defineEmits(['toggle', 'showDetail'])
 
 const sumProducts = computed(() =>
   (props.combo.products || []).reduce((a, p) => a + Number(p.price), 0)
@@ -92,7 +92,9 @@ function fmt(n) { return '$' + Number(n).toLocaleString('es-AR') }
   display: flex; align-items: center; gap: 10px;
   background: rgba(255,255,255,0.08);
   border-radius: 10px; padding: 8px 10px;
+  cursor: pointer; transition: background 0.15s;
 }
+.combo-product:hover { background: rgba(255,255,255,0.15); }
 .combo-product-img-wrap { flex-shrink: 0; }
 .combo-product-img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; }
 .combo-product-emoji { font-size: 24px; }

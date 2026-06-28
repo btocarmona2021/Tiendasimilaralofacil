@@ -1,6 +1,6 @@
 <template>
   <div class="product-card" :class="{ 'in-cart': qty > 0 }">
-    <div class="card-image" @click="$emit('changeQty', product.id, 1)">
+    <div class="card-image" @click="$emit('show-detail', product)">
       <img v-if="product.image" :src="product.image" :alt="product.name" />
       <div v-else class="card-placeholder">
         <span class="card-emoji-big">{{ product.emoji }}</span>
@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="card-body">
-      <h3 class="card-title">{{ product.name }}</h3>
+      <h3 class="card-title" @click="$emit('show-detail', product)">{{ product.name }}</h3>
       <p class="card-desc" v-if="product.description">{{ product.description }}</p>
       <div class="card-bottom">
         <div>
@@ -33,7 +33,7 @@ const props = defineProps({
   product: Object,
   index: Number,
 })
-defineEmits(['changeQty'])
+defineEmits(['changeQty', 'showDetail'])
 
 const cart = useCartStore()
 const qty = computed(() => cart.items[props.product.id] || 0)

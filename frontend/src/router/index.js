@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import CatalogView from '../views/CatalogView.vue'
+import ProductDetail from '../views/ProductDetail.vue'
 import ReviewView from '../views/ReviewView.vue'
 import AdminLogin from '../views/AdminLogin.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
@@ -13,6 +14,7 @@ import AdminSettings from '../views/AdminSettings.vue'
 
 const routes = [
   { path: '/', name: 'home', component: CatalogView },
+  { path: '/product/:id', name: 'product-detail', component: ProductDetail },
   { path: '/review/:token', name: 'review', component: ReviewView },
   { path: '/admin/login', name: 'admin-login', component: AdminLogin },
   { path: '/admin', name: 'admin-dashboard', component: AdminDashboard, meta: { requiresAuth: true } },
