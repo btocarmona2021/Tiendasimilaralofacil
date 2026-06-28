@@ -11,6 +11,7 @@ import AdminOrders from '../views/AdminOrders.vue'
 import AdminDiscounts from '../views/AdminDiscounts.vue'
 import AdminReviews from '../views/AdminReviews.vue'
 import AdminSettings from '../views/AdminSettings.vue'
+import AdminUsers from '../views/AdminUsers.vue'
 
 const routes = [
   { path: '/', name: 'home', component: CatalogView },
@@ -25,6 +26,7 @@ const routes = [
   { path: '/admin/discounts', name: 'admin-discounts', component: AdminDiscounts, meta: { requiresAuth: true } },
   { path: '/admin/reviews', name: 'admin-reviews', component: AdminReviews, meta: { requiresAuth: true } },
   { path: '/admin/settings', name: 'admin-settings', component: AdminSettings, meta: { requiresAuth: true } },
+  { path: '/admin/users', name: 'admin-users', component: AdminUsers, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({

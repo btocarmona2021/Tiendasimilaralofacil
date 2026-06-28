@@ -16,6 +16,8 @@ import reviewsRouter from './routes/reviews.js';
 import settingsRouter from './routes/settings.js';
 import mercadopagoRouter from './routes/mercadopago.js';
 import uploadRouter from './routes/upload.js';
+import adminUsersRouter from './routes/adminUsers.js';
+import adminSystemRouter from './routes/adminSystem.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -38,6 +40,8 @@ app.use('/shop/api/reviews', reviewsRouter);
 app.use('/shop/api/settings', settingsRouter);
 app.use('/shop/api/mercadopago', mercadopagoRouter);
 app.use('/shop/api/upload', uploadRouter);
+app.use('/shop/api/admin/users', adminUsersRouter);
+app.use('/shop/api/admin/system', adminSystemRouter);
 
 app.get('/shop/api/config', async (req, res) => {
   try {

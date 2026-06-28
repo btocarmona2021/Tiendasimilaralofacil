@@ -9,8 +9,10 @@
       <router-link to="/admin/orders" class="admin-link">📋 Pedidos</router-link>
       <router-link to="/admin/discounts" class="admin-link">🏷️ Códigos</router-link>
       <router-link to="/admin/reviews" class="admin-link">⭐ Reseñas</router-link>
+      <router-link v-if="auth.isSuperAdmin" to="/admin/users" class="admin-link">👥 Usuarios</router-link>
       <router-link to="/admin/settings" class="admin-link">⚙️ Configuración</router-link>
       <button @click="logout" class="admin-link" style="margin-top:auto;background:none;border:none;cursor:pointer;text-align:left;padding:10px 14px;color:var(--red)">🚪 Salir</button>
+      <div v-if="auth.isSuperAdmin" style="font-size:10px;color:var(--gold);text-align:center;margin-top:4px;font-weight:600">🛡️ Super Admin</div>
     </aside>
     <main class="admin-content">
       <slot />

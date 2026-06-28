@@ -74,6 +74,34 @@
         <label>Titular</label>
         <input v-model="form.bank_holder" placeholder="Nombre del titular">
       </div>
+
+      <div class="setting-group" v-if="auth.isSuperAdmin" style="border:2px solid var(--red)">
+        <h3>⚠️ Sistema</h3>
+
+        <label style="margin-top:0">Resetear sistema</label>
+        <p style="font-size:12px;color:var(--light-text);margin-bottom:8px">Borra todos los productos, pedidos y reseñas, y vuelve a sembrar datos de ejemplo para el rubro seleccionado.</p>
+        <select v-model="resetRubro" style="margin-bottom:8px">
+          <option value="fiambres">🥩 Fiambrería</option>
+          <option value="ferreteria">🔧 Ferretería</option>
+          <option value="verduleria">🥬 Verdulería</option>
+          <option value="carniceria">🥩 Carnicería</option>
+          <option value="panaderia">🥐 Panadería</option>
+          <option value="libreria">📚 Librería</option>
+          <option value="indumentaria">👕 Indumentaria</option>
+        </select>
+        <button class="btn-danger" @click="resetSystem" :disabled="resetting">{{ resetting ? 'Reseteando...' : '🔄 Resetear sistema' }}</button>
+
+        <hr style="margin:16px 0;border:none;border-top:1px solid var(--warm)">
+
+        <label>Backup / Restore</label>
+        <p style="font-size:12px;color:var(--light-text);margin-bottom:8px">Descargá un backup JSON de todos los datos o restaurá desde uno.</p>
+        <button class="btn-backup" @click="downloadBackup" :disabled="backingUp">{{ backingUp ? 'Descargando...' : '⬇️ Descargar backup' }}</button>
+        <div style="margin-top:8px">
+          <label style="font-size:11px">Restaurar desde archivo JSON</label>
+          <input type="file" accept=".json" @change="restoreBackup" ref="fileInput" style="font-size:12px;padding:4px">
+        </div>
+        <p v-if="sysMsg" class="sys-msg">{{ sysMsg }}</p>
+      </div>
     </div>
 
     <button class="btn-save" @click="save">💾 Guardar configuración</button>
@@ -85,15 +113,22 @@
 import { ref, onMounted } from 'vue'
 import api from '../services/api.js'
 import AdminLayout from '../components/AdminLayout.vue'
+import { useAuthStore } from '../stores/auth.js'
 
+const auth = useAuthStore()
 const form = ref({})
 const msg = ref('')
+const resetRubro = ref('ferreteria')
+const resetting = ref(false)
+const backingUp = ref(false)
+const sysMsg = ref('')
+const fileInput = ref(null)
 
 async function load() {
   const { data } = await api.get('/settings')
   form.value = Object.keys(data).length ? data : {
     rubro: 'ferreteria',
-    store_name: 'A lo Fácil – Ferretería',
+    store_name: 'Ferretería',
     subtitle: 'Herramientas profesionales · Pedidos por WhatsApp',
     promo: '🔧 Envíos a toda la zona',
     whatsapp: '542934463759',
@@ -118,6 +153,54 @@ async function save() {
   msg.value = ''
   await api.put('/settings', form.value)
   msg.value = '✅ Configuración guardada. Recargá la página para ver los cambios.'
+}
+
+async function resetSystem() {
+  if (!confirm(`¿Resetear todo el sistema para el rubro "${resetRubro.value}"? Se borrarán todos los productos, pedidos y reseñas.`)) return
+  resetting.value = true
+  sysMsg.value = ''
+  try {
+    const { data } = await api.post('/admin/system/reset', { rubro: resetRubro.value })
+    sysMsg.value = `✅ ${data.message}`
+  } catch (e) {
+    sysMsg.value = '❌ Error al resetear: ' + (e.response?.data?.error || e.message)
+  }
+  resetting.value = false
+}
+
+async function downloadBackup() {
+  backingUp.value = true
+  sysMsg.value = ''
+  try {
+    const { data } = await api.get('/admin/system/backup')
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `backup-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+    sysMsg.value = '✅ Backup descargado'
+  } catch (e) {
+    sysMsg.value = '❌ Error al descargar backup: ' + (e.response?.data?.error || e.message)
+  }
+  backingUp.value = false
+}
+
+async function restoreBackup(e) {
+  const file = e.target.files[0]
+  if (!file) return
+  if (!confirm('¿Restaurar desde este archivo? Se borrarán TODOS los datos actuales.')) return
+  sysMsg.value = ''
+  try {
+    const text = await file.text()
+    const data = JSON.parse(text)
+    await api.post('/admin/system/restore', data)
+    sysMsg.value = '✅ Restauración completada. Recargá la página.'
+  } catch (e) {
+    sysMsg.value = '❌ Error al restaurar: ' + (e.response?.data?.error || e.message)
+  }
+  fileInput.value.value = ''
 }
 
 onMounted(load)
@@ -145,5 +228,12 @@ onMounted(load)
   font-family: var(--font-family, 'DM Sans', sans-serif);
 }
 .msg { text-align: center; font-size: 13px; color: green; margin-top: 12px; }
+.sys-msg { text-align: center; font-size: 12px; margin-top: 8px; padding: 8px; border-radius: 8px; }
+.sys-msg:not(:empty) { background: var(--cream); }
+.btn-danger { width:100%; background: var(--red); color:#fff; border:none; border-radius:8px; padding:10px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+.btn-danger:disabled { opacity:0.6; }
+.btn-backup { width:100%; background: var(--brown); color:#fff; border:none; border-radius:8px; padding:10px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+.btn-backup:disabled { opacity:0.6; }
+hr { border: none; border-top: 1px solid var(--warm); }
 @media (max-width: 600px) { .settings-grid { grid-template-columns: 1fr; } }
 </style>
