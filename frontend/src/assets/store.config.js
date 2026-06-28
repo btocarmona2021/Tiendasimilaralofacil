@@ -1,7 +1,6 @@
 export const presets = {
   fiambres: {
-    name: "A lo Fácil – Fiambres",
-    slug: "alofacil",
+    name: "Fiambres",
     rubro: "fiambres",
     rubroLabel: "Fiambrería",
     subtitle: "Productos frescos · Pedidos por WhatsApp",
@@ -47,7 +46,7 @@ export const presets = {
   },
 
   ferreteria: {
-    name: "A lo Fácil – Ferretería",
+    name: "Ferretería",
     slug: "ferreteria",
     rubro: "ferreteria",
     rubroLabel: "Ferretería",
@@ -95,7 +94,7 @@ export const presets = {
   },
 
   verduleria: {
-    name: "A lo Fácil – Verdulería",
+    name: "Verdulería",
     slug: "verduleria",
     rubro: "verduleria",
     rubroLabel: "Verdulería",
@@ -137,7 +136,7 @@ export const presets = {
     },
   },
   carniceria: {
-    name: "A lo Fácil – Carnicería",
+    name: "Carnicería",
     slug: "carniceria",
     rubro: "carniceria",
     rubroLabel: "Carnicería",
@@ -184,7 +183,7 @@ export const presets = {
   },
 
   panaderia: {
-    name: "A lo Fácil – Panadería",
+    name: "Panadería",
     slug: "panaderia",
     rubro: "panaderia",
     rubroLabel: "Panadería",
@@ -231,7 +230,7 @@ export const presets = {
   },
 
   libreria: {
-    name: "A lo Fácil – Librería",
+    name: "Librería",
     slug: "libreria",
     rubro: "libreria",
     rubroLabel: "Librería",
@@ -278,7 +277,7 @@ export const presets = {
   },
 
   indumentaria: {
-    name: "A lo Fácil – Indumentaria",
+    name: "Indumentaria",
     slug: "indumentaria",
     rubro: "indumentaria",
     rubroLabel: "Indumentaria",
