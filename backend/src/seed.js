@@ -32,7 +32,13 @@ async function seed() {
   const [rows] = await pool.query('SELECT id, slug FROM categories');
   rows.forEach(r => { catMap[r.slug] = r.id; });
 
+  await pool.query('SET FOREIGN_KEY_CHECKS = 0');
+  await pool.query('DELETE FROM combo_products');
   await pool.query('DELETE FROM products');
+  await pool.query('DELETE FROM combos');
+  await pool.query('DELETE FROM reviews');
+  await pool.query('DELETE FROM orders');
+  await pool.query('SET FOREIGN_KEY_CHECKS = 1');
   for (const p of data.products) {
     const catId = catMap[p.cat];
     if (!catId) continue;
@@ -43,8 +49,6 @@ async function seed() {
   }
   console.log(`✅ ${data.products.length} productos creados`);
 
-  await pool.query('DELETE FROM combos');
-  await pool.query('DELETE FROM combo_products');
   for (const c of data.combos) {
     const [result] = await pool.query(
       'INSERT INTO combos (name, description, emoji, price) VALUES (?, ?, ?, ?)',
@@ -72,7 +76,6 @@ async function seed() {
     { name: 'Martín Díaz', rating: 3, text: 'Los productos están bien pero la página a veces se traba un poco. Por lo demás todo ok.' },
     { name: 'Valentina Castro', rating: 5, text: 'Excelente servicio, los fiambres son de primera. El jamón crudo es espectacular. Súper recomendado.' },
   ];
-  await pool.query('DELETE FROM reviews');
   for (const r of reviews) {
     await pool.query(
       'INSERT INTO reviews (customer_name, rating, text, is_approved) VALUES (?, ?, ?, TRUE)',
