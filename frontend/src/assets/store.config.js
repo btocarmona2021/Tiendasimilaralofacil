@@ -84,6 +84,7 @@ export const presets = {
       { slug: 'paint', name: 'Pinturería', icon: '🎨' },
       { slug: 'plumbing', name: 'Plomería', icon: '🔩' },
       { slug: 'hardware', name: 'Fijaciones', icon: '⚙️' },
+      { slug: 'garden', name: 'Jardinería', icon: '🌿' },
     ],
     info: {
       hours: 'Lunes a Viernes · 8:00–18:00 / Sábados 8:00–13:00',
