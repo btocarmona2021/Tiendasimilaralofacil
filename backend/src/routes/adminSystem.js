@@ -54,6 +54,10 @@ async function restoreData(data) {
 
 import { rubroSettings, seeds } from '../seedData.js';
 
+function productImageUrl(name) {
+  return `https://picsum.photos/seed/${encodeURIComponent(name.replace(/\s+/g, '-').toLowerCase())}/400/400`;
+}
+
 router.post('/reset', async (req, res) => {
   try {
     const { rubro } = req.body;
@@ -88,8 +92,8 @@ router.post('/reset', async (req, res) => {
         const catId = catMap[p.cat];
         if (!catId) continue;
         await pool.query(
-          'INSERT INTO products (category_id, name, description, price, unit, emoji) VALUES (?, ?, ?, ?, ?, ?)',
-          [catId, p.name, p.desc || null, p.price, p.unit, p.emoji]
+          'INSERT INTO products (category_id, name, description, price, unit, emoji, image) VALUES (?, ?, ?, ?, ?, ?, ?)',
+          [catId, p.name, p.desc || null, p.price, p.unit, p.emoji, productImageUrl(p.name)]
         );
       }
 
@@ -173,8 +177,8 @@ router.post('/seed', async (req, res) => {
       const catId = catMap[p.cat];
       if (!catId) continue;
       await pool.query(
-        'INSERT INTO products (category_id, name, description, price, unit, emoji) VALUES (?, ?, ?, ?, ?, ?)',
-        [catId, p.name, p.desc || null, p.price, p.unit, p.emoji]
+        'INSERT INTO products (category_id, name, description, price, unit, emoji, image) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [catId, p.name, p.desc || null, p.price, p.unit, p.emoji, productImageUrl(p.name)]
       );
     }
 

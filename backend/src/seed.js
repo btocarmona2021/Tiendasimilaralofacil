@@ -8,6 +8,10 @@ const pass = process.argv[4] || 'admin123';
 
 const SUPER_ADMIN_PASS = process.env.SUPER_ADMIN_PASSWORD || 'root123';
 
+function productImageUrl(name) {
+  return `https://picsum.photos/seed/${encodeURIComponent(name.replace(/\s+/g, '-').toLowerCase())}/400/400`;
+}
+
 async function seed() {
   const settings = rubroSettings[rubro] || rubroSettings.ferreteria;
   const data = seeds[rubro] || seeds.ferreteria;
@@ -43,8 +47,8 @@ async function seed() {
     const catId = catMap[p.cat];
     if (!catId) continue;
     await pool.query(
-      'INSERT INTO products (category_id, name, description, price, unit, emoji) VALUES (?, ?, ?, ?, ?, ?)',
-      [catId, p.name, p.desc || null, p.price, p.unit, p.emoji]
+      'INSERT INTO products (category_id, name, description, price, unit, emoji, image) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [catId, p.name, p.desc || null, p.price, p.unit, p.emoji, productImageUrl(p.name)]
     );
   }
   console.log(`✅ ${data.products.length} productos creados`);
