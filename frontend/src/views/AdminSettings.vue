@@ -15,6 +15,10 @@
           <option value="fiambres">🥩 Fiambrería</option>
           <option value="ferreteria">🔧 Ferretería</option>
           <option value="verduleria">🥬 Verdulería</option>
+          <option value="carniceria">🥩 Carnicería</option>
+          <option value="panaderia">🥐 Panadería</option>
+          <option value="libreria">📚 Librería</option>
+          <option value="indumentaria">👕 Indumentaria</option>
         </select>
         <label>Subtítulo (header)</label>
         <input v-model="form.subtitle" placeholder="Ej: Productos frescos">
