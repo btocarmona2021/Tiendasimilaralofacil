@@ -130,6 +130,88 @@ router.post('/reset', async (req, res) => {
   }
 });
 
+router.post('/clean', async (req, res) => {
+  try {
+    await pool.query('SET FOREIGN_KEY_CHECKS = 0');
+    for (const table of DATA_TABLES) {
+      await pool.query(`DELETE FROM ${table}`);
+    }
+    await pool.query('DELETE FROM store_settings');
+    await pool.query('SET FOREIGN_KEY_CHECKS = 1');
+    res.json({ message: 'Todos los datos eliminados' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/seed', async (req, res) => {
+  try {
+    const { rubro } = req.body;
+    if (!rubro) return res.status(400).json({ error: 'Rubro requerido' });
+
+    const settings = rubroSettings[rubro] || rubroSettings.ferreteria;
+    const data = seeds[rubro] || seeds.ferreteria;
+
+    for (const [key, value] of Object.entries(settings)) {
+      await pool.query(
+        'INSERT INTO store_settings (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = ?',
+        [key, String(value), String(value)]
+      );
+    }
+
+    for (const cat of data.categories) {
+      await pool.query(
+        'INSERT INTO categories (name, slug, icon, sort_order) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE name=name',
+        [cat.name, cat.slug, cat.icon, cat.sort_order]
+      );
+    }
+    const [cats] = await pool.query('SELECT id, slug FROM categories');
+    const catMap = {};
+    cats.forEach(r => { catMap[r.slug] = r.id; });
+
+    for (const p of data.products) {
+      const catId = catMap[p.cat];
+      if (!catId) continue;
+      await pool.query(
+        'INSERT INTO products (category_id, name, description, price, unit, emoji) VALUES (?, ?, ?, ?, ?, ?)',
+        [catId, p.name, p.desc || null, p.price, p.unit, p.emoji]
+      );
+    }
+
+    for (const c of data.combos) {
+      const [result] = await pool.query(
+        'INSERT INTO combos (name, description, emoji, price) VALUES (?, ?, ?, ?)',
+        [c.name, c.desc, c.emoji, c.price]
+      );
+      if (c.products?.length > 0) {
+        const [prods] = await pool.query('SELECT id, name FROM products WHERE name IN (?)', [c.products]);
+        const values = prods.map(p => [result.insertId, p.id]);
+        if (values.length > 0) {
+          await pool.query('INSERT INTO combo_products (combo_id, product_id) VALUES ?', [values]);
+        }
+      }
+    }
+
+    const reviews = [
+      { name: 'María López', rating: 5, text: 'Excelente atención y productos de primera calidad.' },
+      { name: 'Carlos Méndez', rating: 5, text: 'Muy buena variedad y precios competitivos.' },
+      { name: 'Ana Gómez', rating: 4, text: 'Buena calidad, encontré todo lo que necesitaba.' },
+      { name: 'Pedro Martínez', rating: 4, text: 'Buena atención y asesoramiento.' },
+      { name: 'Sofía Ramírez', rating: 5, text: 'Productos de calidad y precio justo.' },
+    ];
+    for (const r of reviews) {
+      await pool.query(
+        'INSERT INTO reviews (customer_name, rating, text, is_approved) VALUES (?, ?, ?, TRUE)',
+        [r.name, r.rating, r.text]
+      );
+    }
+
+    res.json({ message: `Datos de ejemplo cargados para rubro: ${rubro}` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get('/backup', async (req, res) => {
   try {
     const data = await backupData();

@@ -78,9 +78,8 @@
       <div class="setting-group" v-if="auth.isSuperAdmin" style="border:2px solid var(--red)">
         <h3>⚠️ Sistema</h3>
 
-        <label style="margin-top:0">Resetear sistema</label>
-        <p style="font-size:12px;color:var(--light-text);margin-bottom:8px">Borra todos los productos, pedidos y reseñas, y vuelve a sembrar datos de ejemplo para el rubro seleccionado.</p>
-        <select v-model="resetRubro" style="margin-bottom:8px">
+        <label style="margin-top:0">Rubro para datos de ejemplo</label>
+        <select v-model="resetRubro" style="margin-bottom:10px">
           <option value="fiambres">🥩 Fiambrería</option>
           <option value="ferreteria">🔧 Ferretería</option>
           <option value="verduleria">🥬 Verdulería</option>
@@ -89,7 +88,13 @@
           <option value="libreria">📚 Librería</option>
           <option value="indumentaria">👕 Indumentaria</option>
         </select>
-        <button class="btn-danger" @click="resetSystem" :disabled="resetting">{{ resetting ? 'Reseteando...' : '🔄 Resetear sistema' }}</button>
+
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button class="btn-outline" @click="cleanData" :disabled="cleaning" style="flex:1">🗑️ Limpiar todo</button>
+          <button class="btn-seed" @click="seedData" :disabled="seeding" style="flex:1">🌱 Poblar datos</button>
+        </div>
+
+        <button class="btn-danger" @click="resetSystem" :disabled="resetting">{{ resetting ? 'Reseteando...' : '🔄 Reset + Poblar (full)' }}</button>
 
         <hr style="margin:16px 0;border:none;border-top:1px solid var(--warm)">
 
@@ -120,6 +125,8 @@ const form = ref({})
 const msg = ref('')
 const resetRubro = ref('ferreteria')
 const resetting = ref(false)
+const cleaning = ref(false)
+const seeding = ref(false)
 const backingUp = ref(false)
 const sysMsg = ref('')
 const fileInput = ref(null)
@@ -153,6 +160,32 @@ async function save() {
   msg.value = ''
   await api.put('/settings', form.value)
   msg.value = '✅ Configuración guardada. Recargá la página para ver los cambios.'
+}
+
+async function cleanData() {
+  if (!confirm('¿Eliminar TODOS los datos (productos, pedidos, reseñas, etc.)?')) return
+  cleaning.value = true
+  sysMsg.value = ''
+  try {
+    const { data } = await api.post('/admin/system/clean')
+    sysMsg.value = `✅ ${data.message}`
+  } catch (e) {
+    sysMsg.value = '❌ Error: ' + (e.response?.data?.error || e.message)
+  }
+  cleaning.value = false
+}
+
+async function seedData() {
+  if (!confirm(`¿Poblar datos de ejemplo para "${resetRubro.value}"?`)) return
+  seeding.value = true
+  sysMsg.value = ''
+  try {
+    const { data } = await api.post('/admin/system/seed', { rubro: resetRubro.value })
+    sysMsg.value = `✅ ${data.message}`
+  } catch (e) {
+    sysMsg.value = '❌ Error: ' + (e.response?.data?.error || e.message)
+  }
+  seeding.value = false
 }
 
 async function resetSystem() {
@@ -234,6 +267,10 @@ onMounted(load)
 .btn-danger:disabled { opacity:0.6; }
 .btn-backup { width:100%; background: var(--brown); color:#fff; border:none; border-radius:8px; padding:10px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
 .btn-backup:disabled { opacity:0.6; }
+.btn-outline { background: none; border:2px solid var(--red); color:var(--red); border-radius:8px; padding:10px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+.btn-outline:disabled { opacity:0.6; }
+.btn-seed { background: #27ae60; color:#fff; border:none; border-radius:8px; padding:10px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+.btn-seed:disabled { opacity:0.6; }
 hr { border: none; border-top: 1px solid var(--warm); }
 @media (max-width: 600px) { .settings-grid { grid-template-columns: 1fr; } }
 </style>
