@@ -24,7 +24,7 @@
         <div class="cart-item-emoji">{{ item.emoji }}</div>
         <div class="cart-item-info">
           <div class="cart-item-name">{{ item.name }}</div>
-          <div class="cart-item-sub">Combo</div>
+          <div class="cart-item-sub">{{ item.products?.length || 0 }} productos</div>
         </div>
         <div class="cart-item-right">
           <div class="cart-item-price">{{ fmt(item.price) }}</div>

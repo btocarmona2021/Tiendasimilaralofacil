@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS combo_products (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  combo_id INT NOT NULL,
+  product_id INT NOT NULL,
+  FOREIGN KEY (combo_id) REFERENCES combos(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

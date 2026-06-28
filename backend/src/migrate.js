@@ -6,7 +6,7 @@ import pool from './config/db.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const migrations = ['001_init.sql', '002_payments.sql', '003_products_image.sql', '004_review_tokens.sql'];
+const migrations = ['001_init.sql', '002_payments.sql', '003_products_image.sql', '004_review_tokens.sql', '005_combo_products.sql'];
 
 for (const file of migrations) {
   const sql = readFileSync(resolve(__dirname, `../migrations/${file}`), 'utf8');

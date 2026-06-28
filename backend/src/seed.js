@@ -192,8 +192,8 @@ const seeds = {
       { cat: 'sanguches', name: 'Jamón y Queso', price: 5000, unit: 'x3 u.', emoji: '🥪', desc: 'Sanguches de jamón cocido y queso cremoso en pan lactal fresco. x3 unidades.' },
     ],
     combos: [
-      { name: 'Queso Barra + Jamón', desc: '1kg de Queso Barra + 1kg de Jamón Cocido', emoji: '🧀🍖', price: 29500 },
-      { name: 'Picada x4 personas', desc: 'Salame + Jamón + Queso + Mortadela (1kg total)', emoji: '🫒', price: 22900 },
+      { name: 'Queso Barra + Jamón', desc: '1kg de Queso Barra + 1kg de Jamón Cocido', emoji: '🧀🍖', price: 29500, products: ['Queso Sardo', 'Jamón Cocido'] },
+      { name: 'Picada x4 personas', desc: 'Salame + Jamón + Queso + Mortadela (1kg total)', emoji: '🫒', price: 22900, products: ['Salame Milán Premium', 'Jamón Crudo', 'Queso Cremoso Cremón', 'Lomo Ahumado'] },
     ],
   },
   ferreteria: {
@@ -253,8 +253,8 @@ const seeds = {
       { cat: 'garden', name: 'Guantes Jardinería', price: 3800, unit: 'par', emoji: '🧤', desc: 'Guantes de jardinería con palma de látex antideslizante. Protegen espinas y humedad.' },
     ],
     combos: [
-      { name: 'Kit Básico Herramientas', desc: 'Martillo + Pinza + Destornillador + Cinta métrica', emoji: '🔧🛠️', price: 21900 },
-      { name: 'Combo Pintor', desc: 'Látex 20L + Rodillo + Bandeja + Cinta de enmascarar', emoji: '🎨🖌️', price: 38900 },
+      { name: 'Kit Básico Herramientas', desc: 'Martillo + Pinza + Destornillador + Cinta métrica', emoji: '🔧🛠️', price: 21900, products: ['Martillo de Carpintero 500g', 'Pinza Universal 8"', 'Destornillador Plano 6mm', 'Cinta Métrica 5m'] },
+      { name: 'Combo Pintor', desc: 'Látex 20L + Rodillo + Bandeja + Cinta de enmascarar', emoji: '🎨🖌️', price: 38900, products: ['Látex Interior 20L Blanco', 'Rodillo Profesional 23cm'] },
     ],
   },
   verduleria: {
@@ -278,8 +278,8 @@ const seeds = {
       { cat: 'almacen', name: 'Arroz 1kg', price: 2200, unit: 'kg', emoji: '📦', desc: 'Arroz largo fino, de grano perfecto. Ideal para guarniciones y ensaladas.' },
     ],
     combos: [
-      { name: 'Bolsa de Frutas', desc: '5kg de frutas variadas de estación', emoji: '🍎🍊', price: 8900 },
-      { name: 'Canasta Verde', desc: '7kg de verduras seleccionadas', emoji: '🥬🥕', price: 7500 },
+      { name: 'Bolsa de Frutas', desc: '5kg de frutas variadas de estación', emoji: '🍎🍊', price: 8900, products: ['Manzana Red Delicious', 'Banana Ecuatoriana', 'Naranja Jugo', 'Frutilla'] },
+      { name: 'Canasta Verde', desc: '7kg de verduras seleccionadas', emoji: '🥬🥕', price: 7500, products: ['Lechuga Fresca', 'Tomate Perita', 'Cebolla', 'Papa'] },
     ],
   },
   carniceria: {
@@ -313,8 +313,8 @@ const seeds = {
       { cat: 'preparados', name: 'Brochette de Pollo x6', price: 5500, unit: 'x6 u.', emoji: '🍢', desc: 'Brochettes de pollo con pimiento y cebolla, x6 unidades. Listas para la parrilla.' },
     ],
     combos: [
-      { name: 'Combo Parrillero x4', desc: '2kg Asado + 1kg Chorizo + 1kg Morcilla', emoji: '🥩🌭', price: 24500 },
-      { name: 'Combo Hamburguesas', desc: '12 Hamburguesas + 12 panes + Cheddar 250g', emoji: '🍔🧀', price: 18900 },
+      { name: 'Combo Parrillero x4', desc: '2kg Asado + 1kg Chorizo + 1kg Morcilla', emoji: '🥩🌭', price: 24500, products: ['Asado de Tira', 'Chorizo Parrillero', 'Morcilla'] },
+      { name: 'Combo Hamburguesas', desc: '12 Hamburguesas + 12 panes + Cheddar 250g', emoji: '🍔🧀', price: 18900, products: ['Hamburguesas Caseras x4'] },
     ],
   },
   panaderia: {
@@ -343,8 +343,8 @@ const seeds = {
       { cat: 'galletas', name: 'Galletitas de Manteca', price: 3200, unit: 'kg', emoji: '🍪', desc: 'Galletitas de manteca clásicas, bañadas en chocolate. Ideales para la merienda.' },
     ],
     combos: [
-      { name: 'Desayuno x2', desc: '2 Medialunas + Café + Jugo de naranja', emoji: '🥐☕', price: 6500 },
-      { name: 'Combo Merienda', desc: 'Torta Rogel + 6 Alfajores + 1kg Facturas', emoji: '🎂🥐', price: 16500 },
+      { name: 'Desayuno x2', desc: '2 Medialunas + Café + Jugo de naranja', emoji: '🥐☕', price: 6500, products: ['Medialuna de Manteca', 'Pan de Hamburguesa x4'] },
+      { name: 'Combo Merienda', desc: 'Torta Rogel + 6 Alfajores + 1kg Facturas', emoji: '🎂🥐', price: 16500, products: ['Torta Rogel', 'Alfajores de Maicena x6', 'Facturas Variadas'] },
     ],
   },
   libreria: {
@@ -377,8 +377,8 @@ const seeds = {
       { cat: 'mochilas', name: 'Bolso Matero', price: 8500, unit: 'unidad', emoji: '🧉', desc: 'Bolso matero térmico con soporte para termo y compartimento para yerba.' },
     ],
     combos: [
-      { name: 'Kit Escolar Básico', desc: '5 Cuadernos + 10 Lapiceras + Regla + Goma + Mochila', emoji: '✏️📓', price: 28500 },
-      { name: 'Combo Arte', desc: 'Acuarelas x12 + Lápices x24 + Block A4 + 3 Pinceles', emoji: '🎨🖌️', price: 16500 },
+      { name: 'Kit Escolar Básico', desc: '5 Cuadernos + 10 Lapiceras + Regla + Goma + Mochila', emoji: '✏️📓', price: 28500, products: ['Cuaderno Rayado A4 x48', 'Lapicera Azul Bic', 'Regla 30cm', 'Goma de Borrar', 'Mochila Escolar'] },
+      { name: 'Combo Arte', desc: 'Acuarelas x12 + Lápices x24 + Block A4 + 3 Pinceles', emoji: '🎨🖌️', price: 16500, products: ['Acuarelas x12 colores', 'Lápices de Color x24', 'Block Dibujo A4'] },
     ],
   },
   indumentaria: {
@@ -408,8 +408,8 @@ const seeds = {
       { cat: 'zapatillas', name: 'Ojotas de Goma', price: 6500, unit: 'par', emoji: '🩴', desc: 'Ojotas de goma suave con plantilla anatómica. Cómodas y resistentes.' },
     ],
     combos: [
-      { name: 'Combo Urbano', desc: 'Remera + Jogging + Gorra', emoji: '👕👖🧢', price: 35500 },
-      { name: 'Look Full', desc: 'Buzo + Jean + Zapatillas + Mochila', emoji: '🧥👖👟🎒', price: 82500 },
+      { name: 'Combo Urbano', desc: 'Remera + Jogging + Gorra', emoji: '👕👖🧢', price: 35500, products: ['Remera Algodón Lisa', 'Jogging Algodón', 'Gorra Premium'] },
+      { name: 'Look Full', desc: 'Buzo + Jean + Zapatillas + Mochila', emoji: '🧥👖👟🎒', price: 82500, products: ['Buzo Canguro Algodón', 'Jeans Clásico', 'Zapatillas Urbanas', 'Mochila Urbana'] },
     ],
   },
 };
@@ -450,11 +450,19 @@ async function seed() {
   console.log(`✅ ${data.products.length} productos creados`);
 
   await pool.query('DELETE FROM combos');
+  await pool.query('DELETE FROM combo_products');
   for (const c of data.combos) {
-    await pool.query(
+    const [result] = await pool.query(
       'INSERT INTO combos (name, description, emoji, price) VALUES (?, ?, ?, ?)',
       [c.name, c.desc, c.emoji, c.price]
     );
+    if (c.products && c.products.length > 0) {
+      const [prods] = await pool.query('SELECT id, name FROM products WHERE name IN (?)', [c.products]);
+      const values = prods.map(p => [result.insertId, p.id]);
+      if (values.length > 0) {
+        await pool.query('INSERT INTO combo_products (combo_id, product_id) VALUES ?', [values]);
+      }
+    }
   }
   console.log(`✅ ${data.combos.length} combos creados`);
 

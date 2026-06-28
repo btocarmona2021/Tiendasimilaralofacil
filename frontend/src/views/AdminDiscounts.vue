@@ -64,10 +64,10 @@ onMounted(load)
 .admin-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: var(--radius-sm); overflow: hidden; }
 .admin-table th, .admin-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--warm); font-size: 13px; }
 .admin-table th { background: var(--cream); font-weight: 600; color: var(--light-text); text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; }
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
-.modal { background: var(--white); border-radius: 24px 24px 0 0; padding: 24px 20px; width: 100%; max-width: 480px; }
-.modal-handle { width: 36px; height: 4px; background: var(--warm); border-radius: 2px; margin: 0 auto 20px; }
+.modal { background: var(--white); border-radius: 24px; padding: 24px 20px; width: 100%; max-width: 480px; }
+.modal-handle { display: none; }
 .modal h3 { font-family: 'Playfair Display'; color: var(--brown); margin-bottom: 16px; }
 .modal input { width: 100%; border: 2px solid var(--warm); border-radius: 12px; padding: 13px 14px; font-size: 14px; margin-bottom: 12px; outline: none; }
 .modal-save-btn { width: 100%; background: var(--red); color: #fff; border: none; border-radius: 14px; padding: 15px; font-size: 15px; font-weight: 700; cursor: pointer; }
