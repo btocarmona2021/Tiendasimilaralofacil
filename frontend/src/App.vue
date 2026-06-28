@@ -648,6 +648,7 @@ main {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 16px;
   }
+  #combos .section-title { grid-column: 1 / -1; }
   #combos { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
   #combos .combo-card { margin-bottom: 0; }
 
