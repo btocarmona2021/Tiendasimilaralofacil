@@ -56,6 +56,7 @@ app.get('/shop/api/config', async (req, res) => {
   }
 });
 
+app.use('/shop/seed-images', express.static(resolve(__dirname, '../seed-assets/images')));
 app.use('/shop/uploads', express.static(resolve(__dirname, '../uploads')));
 app.use('/shop', express.static(resolve(__dirname, '../public')));
 

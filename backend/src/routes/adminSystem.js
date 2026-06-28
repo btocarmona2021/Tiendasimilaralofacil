@@ -55,7 +55,8 @@ async function restoreData(data) {
 import { rubroSettings, seeds } from '../seedData.js';
 
 function productImageUrl(name) {
-  return `https://picsum.photos/seed/${encodeURIComponent(name.replace(/\s+/g, '-').toLowerCase())}/400/400`;
+  const slug = name.replace(/\s+/g, '-').toLowerCase();
+  return `/shop/seed-images/${slug}.jpg`;
 }
 
 router.post('/reset', async (req, res) => {

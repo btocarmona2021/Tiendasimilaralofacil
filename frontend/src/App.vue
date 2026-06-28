@@ -96,6 +96,10 @@
         </div>
       </main>
 
+      <div class="store-footer">
+        <router-link to="/admin/login" class="admin-login-link">🔐 Admin</router-link>
+      </div>
+
       <CartFab />
       <CartDrawer />
 
