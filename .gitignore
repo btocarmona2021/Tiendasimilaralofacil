@@ -1,0 +1,6 @@
+node_modules/
+dist/
+backend/public/
+.env
+*.tar.gz
+.DS_Store

@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  tienda:
+    image: tienda-alofacil:latest
+    container_name: tienda-alofacil
+    env_file: .env
+    networks:
+      - mi-servidor_default
+    restart: unless-stopped
+    volumes:
+      - uploads:/usr/src/app/uploads
+
+volumes:
+  uploads:
+
+networks:
+  mi-servidor_default:
+    external: true
