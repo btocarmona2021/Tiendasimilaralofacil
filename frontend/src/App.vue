@@ -68,6 +68,7 @@
               <div class="review-text">{{ r.text }}</div>
             </div>
           </div>
+          <p class="review-note">📝 ¿Ya compraste? Dejá tu reseña con el link que te enviamos cuando recibas tu pedido.</p>
         </div>
 
         <div class="section" id="info">
@@ -528,6 +529,7 @@ main {
 .review-name { font-size: 14px; font-weight: 600; color: var(--text); }
 .review-stars { font-size: 12px; color: var(--gold); }
 .review-text { font-size: 13px; color: var(--light-text); line-height: 1.5; }
+.review-note { font-size: 13px; color: var(--light-text); text-align: center; margin-top: 16px; padding: 10px; background: var(--cream); border-radius: var(--radius-sm); }
 
 .qr-card {
   background: var(--white);

@@ -87,6 +87,9 @@
             </button>
           </div>
         </div>
+        <button v-if="selected.status === 'entregado' && selected.review_token" class="review-link-btn" @click="copyReviewLink(selected.review_token)">
+          🔗 Copiar link de reseña
+        </button>
         <button class="delete-btn" @click="removeOrder(selected.id)">🗑️ Eliminar pedido</button>
       </div>
     </div>
@@ -151,6 +154,13 @@ async function removeOrder(id) {
   await api.delete(`/orders/${id}`)
   selected.value = null
   load()
+}
+
+function copyReviewLink(token) {
+  const url = `${window.location.origin}/shop/review/${token}`
+  navigator.clipboard.writeText(url).then(() => {
+    alert('✅ Link de reseña copiado:\n' + url)
+  })
 }
 
 onMounted(load)
@@ -230,5 +240,10 @@ onMounted(load)
   width: 100%; background: none; border: 1.5px solid var(--red); color: var(--red);
   border-radius: 12px; padding: 10px; font-size: 13px; font-weight: 600;
   cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 12px;
+}
+.review-link-btn {
+  width: 100%; background: var(--brown, #5C3317); color: #fff; border: none;
+  border-radius: 12px; padding: 10px; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 8px;
 }
 </style>

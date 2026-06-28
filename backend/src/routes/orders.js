@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { randomUUID } from 'crypto';
 import pool from '../config/db.js';
 import { authMiddleware } from '../middleware/auth.js';
 
@@ -68,7 +69,17 @@ router.get('/:id', async (req, res) => {
 router.put('/:id/status', authMiddleware, async (req, res) => {
   try {
     const { status } = req.body;
-    await pool.query('UPDATE orders SET status = ? WHERE id = ?', [status, req.params.id]);
+    let reviewToken = null;
+    if (status === 'entregado') {
+      const [existing] = await pool.query('SELECT review_token FROM orders WHERE id = ?', [req.params.id]);
+      if (!existing[0]?.review_token) {
+        reviewToken = randomUUID();
+      }
+    }
+    await pool.query(
+      'UPDATE orders SET status = ?, review_token = COALESCE(?, review_token) WHERE id = ?',
+      [status, reviewToken, req.params.id]
+    );
     const [rows] = await pool.query('SELECT * FROM orders WHERE id = ?', [req.params.id]);
     res.json(rows[0]);
   } catch (err) {
