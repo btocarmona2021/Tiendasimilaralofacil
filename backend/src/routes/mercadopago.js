@@ -10,8 +10,11 @@ router.post('/create-preference', async (req, res) => {
 
     const { MercadoPagoConfig, Preference } = await import('mercadopago');
 
+    const accessToken = req.tenant?.mp_access_token || config.mercadopagoToken;
+    if (!accessToken) return res.status(400).json({ error: 'MercadoPago no configurado. Configurá tu token en Ajustes > Mercado Pago.' });
+
     const client = new MercadoPagoConfig({
-      accessToken: config.mercadopagoToken,
+      accessToken,
       options: { timeout: 5000 }
     });
 
@@ -50,19 +53,19 @@ router.post('/create-preference', async (req, res) => {
     try {
       await conn.beginTransaction();
       const [orderResult] = await conn.query(
-        `INSERT INTO orders (customer_name, customer_phone, delivery_type, address, pickup_date, pickup_time, subtotal, shipping, discount, total, payment_method)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [customer_name, customer_phone, delivery_type || 'retiro', address || null, pickup_date || null, pickup_time || null, subtotal, shipping || 0, discount || 0, total, 'mercadopago']
+        `INSERT INTO orders (tenant_id, customer_name, customer_phone, delivery_type, address, pickup_date, pickup_time, subtotal, shipping, discount, total, payment_method)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [req.tenantId, customer_name, customer_phone, delivery_type || 'retiro', address || null, pickup_date || null, pickup_time || null, subtotal, shipping || 0, discount || 0, total, 'mercadopago']
       );
       orderId = orderResult.insertId;
 
       if (items && items.length > 0) {
-        const values = items.map(i => [orderId, i.product_id, i.product_name, i.quantity, i.unit_price]);
-        await conn.query('INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price) VALUES ?', [values]);
+        const values = items.map(i => [orderId, i.product_id, i.product_name, i.quantity, i.unit_price, req.tenantId]);
+        await conn.query('INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price, tenant_id) VALUES ?', [values]);
       }
       if (combos && combos.length > 0) {
-        const values = combos.map(c => [orderId, c.combo_id, c.combo_name, c.price]);
-        await conn.query('INSERT INTO order_combos (order_id, combo_id, combo_name, price) VALUES ?', [values]);
+        const values = combos.map(c => [orderId, c.combo_id, c.combo_name, c.price, req.tenantId]);
+        await conn.query('INSERT INTO order_combos (order_id, combo_id, combo_name, price, tenant_id) VALUES ?', [values]);
       }
       await conn.commit();
     } catch (err) {
@@ -76,13 +79,13 @@ router.post('/create-preference', async (req, res) => {
     const body = {
       items: preferenceItems,
       back_urls: {
-        success: `${baseUrl}/shop/`,
-        failure: `${baseUrl}/shop/`,
-        pending: `${baseUrl}/shop/`,
+        success: `${baseUrl}/multitienda/${req.params.tenant}/`,
+        failure: `${baseUrl}/multitienda/${req.params.tenant}/`,
+        pending: `${baseUrl}/multitienda/${req.params.tenant}/`,
       },
       auto_return: 'approved',
       external_reference: JSON.stringify({ order_id: orderId }),
-      notification_url: `${baseUrl}/shop/api/mercadopago/webhook`,
+      notification_url: `${baseUrl}/multitienda/${req.params.tenant}/api/mercadopago/webhook`,
     };
 
     const preference = new Preference(client);
@@ -97,58 +100,13 @@ router.post('/create-preference', async (req, res) => {
   }
 });
 
-router.post('/webhook', async (req, res) => {
-  res.sendStatus(200);
-  try {
-    const type = req.body?.type || req.query?.topic || req.query?.type;
-    const data = req.body?.data || {};
-    let paymentId = data?.id || req.body?.id || req.query?.id || req.body?.resource?.id;
-
-    console.log('MP webhook received:', JSON.stringify({ type, paymentId, topic: req.query?.topic, bodyKeys: Object.keys(req.body || {}) }).slice(0, 300));
-
-    if (type === 'payment' || type === 'merchant_order' || req.query?.topic === 'payment') {
-      const { MercadoPagoConfig, Payment } = await import('mercadopago');
-
-      const client = new MercadoPagoConfig({
-        accessToken: config.mercadopagoToken,
-        options: { timeout: 5000 }
-      });
-
-      const payment = new Payment(client);
-      const paymentData = await payment.get({ id: paymentId });
-
-      const status = paymentData.status;
-      const externalRef = paymentData.external_reference;
-
-      let orderId = null;
-      if (externalRef) {
-        try {
-          const ref = JSON.parse(externalRef);
-          orderId = ref.order_id;
-        } catch {}
-      }
-
-      if (orderId) {
-        await pool.query(
-          `UPDATE orders SET mp_payment_id = ?, mp_status = ?, status = ? WHERE id = ?`,
-          [String(paymentId), status, status === 'approved' ? 'confirmado' : 'pendiente', orderId]
-        );
-        console.log('MP webhook: order updated', { orderId, status, paymentId });
-      }
-    }
-  } catch (err) {
-  }
-});
-
-router.get('/webhook', (req, res) => res.sendStatus(200));
-
 router.post('/check-status', async (req, res) => {
   try {
     const { preference_id, payment_id } = req.body;
     let sql, param;
-    if (payment_id) { sql = 'SELECT mp_status, mp_payment_id, status FROM orders WHERE mp_payment_id = ?'; param = payment_id; }
-    else { sql = 'SELECT mp_status, mp_payment_id, status FROM orders WHERE mp_preference_id = ?'; param = preference_id; }
-    const [rows] = await pool.query(sql, [param]);
+    if (payment_id) { sql = 'SELECT mp_status, mp_payment_id, status FROM orders WHERE tenant_id = ? AND mp_payment_id = ?'; param = payment_id; }
+    else { sql = 'SELECT mp_status, mp_payment_id, status FROM orders WHERE tenant_id = ? AND mp_preference_id = ?'; param = preference_id; }
+    const [rows] = await pool.query(sql, [req.tenantId, param]);
     res.json(rows[0] || { mp_status: null, status: 'pendiente' });
   } catch (err) {
     res.status(500).json({ error: err.message });

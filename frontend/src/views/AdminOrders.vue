@@ -157,7 +157,10 @@ async function removeOrder(id) {
 }
 
 function copyReviewLink(token) {
-  const url = `${window.location.origin}/shop/review/${token}`
+  const tenant = window.location.pathname.match(/\/multitienda\/([^/]+)/)?.[1]
+  const url = tenant
+    ? `${window.location.origin}/multitienda/${tenant}/review/${token}`
+    : `${window.location.origin}/multitienda/review/${token}`
   navigator.clipboard.writeText(url).then(() => {
     alert('✅ Link de reseña copiado:\n' + url)
   })

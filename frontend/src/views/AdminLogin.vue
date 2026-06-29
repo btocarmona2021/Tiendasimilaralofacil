@@ -11,25 +11,29 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
+import { tenantFromUrl } from '../services/api.js'
 
 const router = useRouter()
+const route = useRoute()
 const auth = useAuthStore()
 const username = ref('')
 const password = ref('')
 const error = ref('')
 const loading = ref(false)
 
+const tenant = computed(() => route.params.tenant || tenantFromUrl())
+
 async function login() {
   error.value = ''
   loading.value = true
   try {
     await auth.login(username.value, password.value)
-    router.push('/admin')
-  } catch {
-    error.value = 'Credenciales incorrectas'
+    router.push(tenant.value ? `/${tenant.value}/admin` : '/admin')
+  } catch (err) {
+    error.value = err.response?.data?.error || 'Credenciales incorrectas'
   }
   loading.value = false
 }

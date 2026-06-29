@@ -9,7 +9,7 @@ const router = Router();
 
 router.post('/login', async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, tenant } = req.body;
     const [users] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
     if (!users[0]) return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
 
@@ -17,8 +17,20 @@ router.post('/login', async (req, res) => {
     if (!valid) return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
 
     const user = users[0];
-    const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, config.jwtSecret, { expiresIn: '7d' });
-    res.json({ token, username: user.username, role: user.role });
+    const payload = { id: user.id, username: user.username, role: user.role, tenantId: user.tenant_id };
+
+    if (user.role === 'super_admin' && tenant) {
+      const [t] = await pool.query('SELECT id, slug FROM tenants WHERE slug = ?', [tenant]);
+      if (t[0]) payload.tenantId = t[0].id;
+    }
+
+    if (user.role !== 'super_admin' && tenant) {
+      const [t] = await pool.query('SELECT id FROM tenants WHERE slug = ?', [tenant]);
+      if (t[0] && user.tenant_id !== t[0].id) return res.status(401).json({ error: 'No tienes acceso a esta tienda' });
+    }
+
+    const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '7d' });
+    res.json({ token, username: user.username, role: user.role, tenantId: payload.tenantId });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

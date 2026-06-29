@@ -2,18 +2,18 @@
   <div class="admin-layout">
     <aside class="admin-sidebar">
       <h3 style="font-family:'Playfair Display';color:var(--brown);margin-bottom:16px">⚙️ Admin</h3>
-      <router-link to="/admin" class="admin-link">📊 Dashboard</router-link>
-      <router-link to="/admin/products" class="admin-link">📦 Productos</router-link>
-      <router-link to="/admin/categories" class="admin-link">📁 Categorías</router-link>
-      <router-link to="/admin/combos" class="admin-link">✨ Combos</router-link>
-      <router-link to="/admin/orders" class="admin-link">📋 Pedidos</router-link>
-      <router-link to="/admin/discounts" class="admin-link">🏷️ Códigos</router-link>
-      <router-link to="/admin/reviews" class="admin-link">⭐ Reseñas</router-link>
-      <router-link v-if="auth.isSuperAdmin" to="/admin/users" class="admin-link">👥 Usuarios</router-link>
-      <router-link to="/admin/settings" class="admin-link">⚙️ Configuración</router-link>
-      <a href="/shop" target="_blank" class="admin-link" style="margin-top:8px">👁️ Ver Tienda</a>
+      <router-link :to="adminPath('')" class="admin-link">📊 Dashboard</router-link>
+      <router-link :to="adminPath('products')" class="admin-link">📦 Productos</router-link>
+      <router-link :to="adminPath('categories')" class="admin-link">📁 Categorías</router-link>
+      <router-link :to="adminPath('combos')" class="admin-link">✨ Combos</router-link>
+      <router-link :to="adminPath('orders')" class="admin-link">📋 Pedidos</router-link>
+      <router-link :to="adminPath('discounts')" class="admin-link">🏷️ Códigos</router-link>
+      <router-link :to="adminPath('reviews')" class="admin-link">⭐ Reseñas</router-link>
+      <router-link v-if="isSuperAdmin" :to="adminPath('users')" class="admin-link">👥 Usuarios</router-link>
+      <router-link :to="adminPath('settings')" class="admin-link">⚙️ Configuración</router-link>
+      <a :href="storeUrl" target="_blank" class="admin-link" style="margin-top:8px">👁️ Ver Tienda</a>
       <button @click="logout" class="admin-link" style="margin-top:auto;background:none;border:none;cursor:pointer;text-align:left;padding:10px 14px;color:var(--red)">🚪 Salir</button>
-      <div v-if="auth.isSuperAdmin" style="font-size:10px;color:var(--gold);text-align:center;margin-top:4px;font-weight:600">🛡️ Super Admin</div>
+      <div v-if="isSuperAdmin" style="font-size:10px;color:var(--gold);text-align:center;margin-top:4px;font-weight:600">🛡️ Super Admin</div>
     </aside>
     <main class="admin-content">
       <slot />
@@ -22,15 +22,31 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
+import { computed } from 'vue'
+import { tenantFromUrl } from '../services/api.js'
 
 const router = useRouter()
+const route = useRoute()
 const auth = useAuthStore()
+
+const tenant = tenantFromUrl()
+const isSuperAdmin = computed(() => auth.role === 'super_admin')
+
+function adminPath(section) {
+  if (tenant) return `/${tenant}/admin/${section}`
+  return `/admin/${section}`
+}
+
+const storeUrl = computed(() => {
+  if (tenant) return `/multitienda/${tenant}/`
+  return '/multitienda/'
+})
 
 function logout() {
   auth.logout()
-  router.push('/')
+  router.push(tenant ? `/${tenant}/` : '/')
 }
 </script>
 

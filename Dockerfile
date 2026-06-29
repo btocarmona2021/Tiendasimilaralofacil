@@ -6,6 +6,7 @@ COPY frontend/ .
 RUN npm run build
 
 FROM node:20-alpine
+RUN apk add --no-cache imagemagick imagemagick-webp libwebp-tools
 WORKDIR /usr/src/app
 COPY backend/package*.json ./
 RUN npm ci --only=production

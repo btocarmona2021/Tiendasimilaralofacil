@@ -147,7 +147,7 @@ import CartDrawer from './components/CartDrawer.vue'
 
 const route = useRoute()
 const router = useRouter()
-const isAdmin = computed(() => route.path.startsWith('/admin'))
+const isAdmin = computed(() => route.path.includes('/admin'))
 
 const cart = useCartStore()
 

@@ -3,12 +3,12 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [vue()],
-  base: '/shop/',
+  base: '/multitienda/',
   server: {
     proxy: {
-      '/shop/api': {
+      '/multitienda/api': {
         target: 'http://localhost:3000',
-        rewrite: path => path.replace(/^\/shop\/api/, '/api')
+        rewrite: path => path.replace(/^\/multitienda\/api/, '/api')
       }
     }
   },
