@@ -10,8 +10,17 @@ const router = Router();
 router.post('/login', async (req, res) => {
   try {
     const { username, password, tenant } = req.body;
-    const [users] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+    let [users] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
     if (!users[0]) return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
+
+    // If tenant slug provided, find the matching user by tenant_id
+    if (tenant && users.length > 1) {
+      const [t] = await pool.query('SELECT id FROM tenants WHERE slug = ?', [tenant]);
+      if (t[0]) {
+        const match = users.find(u => u.tenant_id === t[0].id);
+        if (match) users = [match];
+      }
+    }
 
     const valid = await bcrypt.compare(password, users[0].password_hash);
     if (!valid) return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
