@@ -31,7 +31,7 @@
           </div>
           <div class="tienda-info">
             <h3>{{ t.store_name }}</h3>
-            <span class="tienda-rubro">{{ rubroLabel(t.rubro) }}</span>
+            <span class="tienda-rubro">{{ t.rubro_label || t.rubro }}</span>
           </div>
           <div class="tienda-botones">
             <a :href="'/multitienda/' + t.slug + '/' " class="btn-ver">👁️ Ver tienda</a>
@@ -59,17 +59,6 @@ const benefits = [
   { icon: '📱', titulo: 'WhatsApp', desc: 'Tus clientes piden por WhatsApp, vos gestionás desde el panel.' },
   { icon: '🔧', titulo: 'Simple', desc: 'Sin conocimientos técnicos. Todo listo para usar.' },
 ]
-
-function rubroLabel(rubro) {
-  const labels = {
-    ferreteria: 'Ferretería', verduleria: 'Verdulería', carniceria: 'Carnicería',
-    panaderia: 'Panadería', libreria: 'Librería', indumentaria: 'Indumentaria',
-    perfumeria: 'Perfumería', deportes: 'Deportes', limpieza: 'Limpieza',
-    petshop: 'Petshop', jugueteria: 'Juguetería', kiosco: 'Kiosco',
-    rotiseria: 'Rotisería', accesorios: 'Accesorios',
-  }
-  return labels[rubro] || rubro
-}
 
 onMounted(async () => {
   try {

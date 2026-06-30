@@ -140,7 +140,7 @@ app.use('/multitienda', express.static(resolve(__dirname, '../public')));
 app.get('/multitienda/api/tiendas', async (req, res) => {
   try {
     const [rows] = await pool.query(
-      "SELECT slug, store_name, rubro, logo, subtitle FROM tenants WHERE is_active = TRUE ORDER BY store_name"
+      "SELECT slug, store_name, rubro, rubro_label, logo, subtitle FROM tenants WHERE is_active = TRUE ORDER BY store_name"
     );
     res.json(rows);
   } catch { res.json([]); }
