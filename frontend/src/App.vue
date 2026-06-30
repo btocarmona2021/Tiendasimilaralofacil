@@ -1,6 +1,6 @@
 <template>
   <div id="app-root" :style="cssVars">
-    <template v-if="!isAdmin && route.name !== 'product-detail'">
+    <template v-if="!isAdmin && route.name !== 'product-detail' && route.name !== 'landing'">
       <header>
         <div class="header-inner">
           <div class="badge">{{ config.categories[0]?.icon || '🏪' }} {{ config.rubroLabel }}</div>

@@ -44,11 +44,11 @@ export const presets = {
     },
   },
 
-  ferreteria: {
-    name: "Ferretería", colorLabel: "Naranja",
-    slug: "ferreteria",
-    rubro: "ferreteria",
-    rubroLabel: "Ferretería",
+  herramientas: {
+    name: "Herramientas", colorLabel: "Naranja",
+    slug: "herramientas",
+    rubro: "herramientas",
+    rubroLabel: "Herramientas",
     subtitle: "Herramientas profesionales · Pedidos por WhatsApp",
     promo: "🔧 Envíos a toda la zona — Consultá precios mayoristas",
     theme: {

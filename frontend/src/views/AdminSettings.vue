@@ -13,7 +13,7 @@
         <label>Rubro</label>
         <select v-model="form.rubro">
           <option value="fiambres">🥩 Fiambrería</option>
-          <option value="ferreteria">🔧 Ferretería</option>
+          <option value="herramientas">🔧 Herramientas</option>
           <option value="verduleria">🥬 Verdulería</option>
           <option value="carniceria">🥩 Carnicería</option>
           <option value="panaderia">🥐 Panadería</option>
@@ -88,13 +88,7 @@
 
         <label style="margin-top:0">Rubro para datos de ejemplo</label>
         <select v-model="resetRubro" style="margin-bottom:10px">
-          <option value="fiambres">🥩 Fiambrería</option>
-          <option value="ferreteria">🔧 Ferretería</option>
-          <option value="verduleria">🥬 Verdulería</option>
-          <option value="carniceria">🥩 Carnicería</option>
-          <option value="panaderia">🥐 Panadería</option>
-          <option value="libreria">📚 Librería</option>
-          <option value="indumentaria">👕 Indumentaria</option>
+          <option value="herramientas">🔧 Herramientas</option>
         </select>
 
         <div style="display:flex;gap:8px;margin-bottom:12px">
@@ -132,7 +126,7 @@ import { themeOptions } from '../assets/store.config.js'
 const auth = useAuthStore()
 const form = ref({})
 const msg = ref('')
-const resetRubro = ref('ferreteria')
+const resetRubro = ref('herramientas')
 const themes = themeOptions
 const resetting = ref(false)
 const cleaning = ref(false)

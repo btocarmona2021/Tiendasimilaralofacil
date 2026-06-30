@@ -1,20 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import LandingPage from '../views/LandingPage.vue'
 import CatalogView from '../views/CatalogView.vue'
 import ProductDetail from '../views/ProductDetail.vue'
 import ReviewView from '../views/ReviewView.vue'
 import AdminLogin from '../views/AdminLogin.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
-import AdminProducts from '../views/AdminProducts.vue'
-import AdminCategories from '../views/AdminCategories.vue'
-import AdminCombos from '../views/AdminCombos.vue'
-import AdminOrders from '../views/AdminOrders.vue'
-import AdminDiscounts from '../views/AdminDiscounts.vue'
-import AdminReviews from '../views/AdminReviews.vue'
-import AdminSettings from '../views/AdminSettings.vue'
-import AdminUsers from '../views/AdminUsers.vue'
 
 const routes = [
-  { path: '/', name: 'home', component: CatalogView },
+  { path: '/', name: 'landing', component: LandingPage },
   { path: '/:tenant/', name: 'store-home', component: CatalogView },
   { path: '/:tenant/product/:id', name: 'store-product-detail', component: ProductDetail },
   { path: '/:tenant/review/:token', name: 'store-review', component: ReviewView },
