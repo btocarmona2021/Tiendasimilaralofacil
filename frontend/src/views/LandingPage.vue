@@ -56,7 +56,7 @@ import api from '../services/api.js'
 
 const stores = ref([])
 const hasLogo = ref(false)
-const logoUrl = '/multitienda/logo.png'
+const logoUrl = '/multitienda/uploads/logo.png'
 
 const benefits = [
   { icon: '📱', titulo: 'Sin dominio ni hosting', desc: 'Tu tienda queda en tudominio.com/multitienda/tunegocio. Listo para compartir.' },

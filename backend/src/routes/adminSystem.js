@@ -384,7 +384,7 @@ router.post('/webp-todas', async (req, res) => {
 
 router.post('/upload-main-logo', (req, res) => {
   const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, publicDir),
+    destination: (req, file, cb) => cb(null, uploadBase),
     filename: (req, file, cb) => cb(null, 'logo.png'),
   });
   const upload = multer({
@@ -399,7 +399,7 @@ router.post('/upload-main-logo', (req, res) => {
   upload(req, res, (err) => {
     if (err) return res.status(400).json({ error: err.message });
     if (!req.file) return res.status(400).json({ error: 'No se subió ninguna imagen' });
-    res.json({ message: 'Logo actualizado correctamente', url: '/multitienda/logo.png' });
+    res.json({ message: 'Logo actualizado correctamente', url: '/multitienda/uploads/logo.png' });
   });
 });
 
