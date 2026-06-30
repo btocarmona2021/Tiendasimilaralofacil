@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import LandingPage from '../views/LandingPage.vue'
 import CatalogView from '../views/CatalogView.vue'
 import ProductDetail from '../views/ProductDetail.vue'
 import ReviewView from '../views/ReviewView.vue'
@@ -14,7 +15,7 @@ import AdminSettings from '../views/AdminSettings.vue'
 import AdminUsers from '../views/AdminUsers.vue'
 
 const routes = [
-  { path: '/', name: 'home', component: CatalogView },
+  { path: '/', name: 'landing', component: LandingPage },
   { path: '/:tenant/', name: 'store-home', component: CatalogView },
   { path: '/:tenant/product/:id', name: 'store-product-detail', component: ProductDetail },
   { path: '/:tenant/review/:token', name: 'store-review', component: ReviewView },
