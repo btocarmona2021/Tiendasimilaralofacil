@@ -2,7 +2,11 @@
   <div class="admin-panel">
     <AdminLayout>
       <h2>📊 Dashboard</h2>
-      <div class="stats">
+      <div v-if="!tenant" class="global-welcome">
+        <p style="font-size:18px;color:var(--brown);margin-bottom:8px">🛡️ Panel de Administración Global</p>
+        <p style="font-size:13px;color:var(--light-text)">Seleccioná una tienda desde la landing page para administrar sus productos, pedidos y más.</p>
+      </div>
+      <div v-else class="stats">
         <div class="stat-card">
           <div class="stat-num">{{ stats.products }}</div>
           <div class="stat-label">Productos</div>
@@ -26,12 +30,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import api from '../services/api.js'
+import api, { tenantFromUrl } from '../services/api.js'
 import AdminLayout from '../components/AdminLayout.vue'
 
+const tenant = tenantFromUrl()
 const stats = ref({ products: 0, orders: 0, pending: 0, revenue: 0 })
 
 onMounted(async () => {
+  if (!tenant) return
   try {
     const [pData, oData] = await Promise.all([
       api.get('/products'),

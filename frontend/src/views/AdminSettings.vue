@@ -6,6 +6,7 @@
     </div>
 
     <div class="settings-grid">
+      <template v-if="tenant">
       <div class="setting-group">
         <h3>🏪 Tienda</h3>
         <label>Nombre</label>
@@ -82,6 +83,7 @@
         <label>Titular</label>
         <input v-model="form.bank_holder" placeholder="Nombre del titular">
       </div>
+      </template>
 
       <div class="setting-group" v-if="auth.isSuperAdmin" style="border:2px solid var(--red)">
         <h3>⚠️ Sistema</h3>
@@ -105,6 +107,20 @@
 
         <hr style="margin:16px 0;border:none;border-top:1px solid var(--warm)">
 
+        <details style="margin-bottom:12px">
+          <summary style="cursor:pointer;font-weight:700;font-size:13px;color:var(--brown)">🏪 Gestionar Tiendas ({{ tenants.length }})</summary>
+          <div style="margin-top:10px;font-size:12px">
+            <div v-for="t in tenants" :key="t.id" style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--warm)">
+              <span><strong>{{ t.slug }}</strong> — {{ t.store_name }} <span v-if="t.plan_nombre" style="color:var(--light-text)">({{ t.plan_nombre }})</span></span>
+              <span>
+                <span v-if="!t.is_active" style="color:var(--red);font-size:11px">❌ Inactiva</span>
+                <button class="btn-sm" @click="toggleTenant(t)" style="margin-left:8px">{{ t.is_active ? '❌' : '✅' }}</button>
+                <span style="font-size:10px;color:var(--light-text);margin-left:8px">vence: {{ t.fecha_vencimiento ? new Date(t.fecha_vencimiento).toLocaleDateString() : '—' }}</span>
+              </span>
+            </div>
+          </div>
+        </details>
+
         <label>Backup / Restore</label>
         <p style="font-size:12px;color:var(--light-text);margin-bottom:8px">Descargá un backup JSON de todos los datos o restaurá desde uno.</p>
         <button class="btn-backup" @click="downloadBackup" :disabled="backingUp">{{ backingUp ? 'Descargando...' : '⬇️ Descargar backup' }}</button>
@@ -123,12 +139,13 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import api from '../services/api.js'
+import api, { tenantFromUrl } from '../services/api.js'
 import AdminLayout from '../components/AdminLayout.vue'
 import { useAuthStore } from '../stores/auth.js'
 import { themeOptions } from '../assets/store.config.js'
 
 const auth = useAuthStore()
+const tenant = tenantFromUrl()
 const form = ref({})
 const msg = ref('')
 const resetRubro = ref('herramientas')
@@ -141,6 +158,23 @@ const sysMsg = ref('')
 const fileInput = ref(null)
 const logoInput = ref(null)
 const logoMsg = ref('')
+const tenants = ref([])
+
+async function loadTenants() {
+  try {
+    const { data } = await api.get('/admin/system/tenants')
+    tenants.value = data
+  } catch {}
+}
+
+async function toggleTenant(t) {
+  try {
+    await api.put(`/admin/system/tenants/${t.id}`, { is_active: t.is_active ? 0 : 1 })
+    t.is_active = t.is_active ? 0 : 1
+  } catch (e) {
+    alert('Error: ' + (e.response?.data?.error || e.message))
+  }
+}
 
 async function uploadMainLogo() {
   const file = logoInput.value?.files?.[0]
@@ -174,8 +208,16 @@ async function uploadStoreLogo(e) {
 }
 
 async function load() {
-  const { data } = await api.get('/settings')
-  form.value = Object.keys(data).length ? data : {
+  try {
+    const { data } = await api.get('/settings')
+    form.value = Object.keys(data).length ? data : defaults()
+  } catch {
+    form.value = defaults()
+  }
+}
+
+function defaults() {
+  return {
     rubro: 'ferreteria',
     store_name: 'Ferretería',
     subtitle: 'Herramientas profesionales · Pedidos por WhatsApp',
@@ -282,7 +324,10 @@ async function restoreBackup(e) {
   fileInput.value.value = ''
 }
 
-onMounted(load)
+onMounted(() => {
+  load()
+  loadTenants()
+})
 </script>
 
 <style scoped>

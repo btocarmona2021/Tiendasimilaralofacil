@@ -3,15 +3,16 @@
     <aside class="admin-sidebar">
       <h3 style="font-family:'Playfair Display';color:var(--brown);margin-bottom:16px">⚙️ Admin</h3>
       <router-link :to="adminPath('')" class="admin-link">📊 Dashboard</router-link>
-      <router-link :to="adminPath('products')" class="admin-link">📦 Productos</router-link>
-      <router-link :to="adminPath('categories')" class="admin-link">📁 Categorías</router-link>
-      <router-link :to="adminPath('combos')" class="admin-link">✨ Combos</router-link>
-      <router-link :to="adminPath('orders')" class="admin-link">📋 Pedidos</router-link>
-      <router-link :to="adminPath('discounts')" class="admin-link">🏷️ Códigos</router-link>
-      <router-link :to="adminPath('reviews')" class="admin-link">⭐ Reseñas</router-link>
+      <router-link v-if="tenant" :to="adminPath('products')" class="admin-link">📦 Productos</router-link>
+      <router-link v-if="tenant" :to="adminPath('categories')" class="admin-link">📁 Categorías</router-link>
+      <router-link v-if="tenant" :to="adminPath('combos')" class="admin-link">✨ Combos</router-link>
+      <router-link v-if="tenant" :to="adminPath('orders')" class="admin-link">📋 Pedidos</router-link>
+      <router-link v-if="tenant" :to="adminPath('discounts')" class="admin-link">🏷️ Códigos</router-link>
+      <router-link v-if="tenant" :to="adminPath('reviews')" class="admin-link">⭐ Reseñas</router-link>
+      <router-link v-if="!tenant && isSuperAdmin" :to="adminPath('settings')" class="admin-link">🏪 Tiendas</router-link>
       <router-link v-if="isSuperAdmin" :to="adminPath('users')" class="admin-link">👥 Usuarios</router-link>
       <router-link :to="adminPath('settings')" class="admin-link">⚙️ Configuración</router-link>
-      <a :href="storeUrl" target="_blank" class="admin-link" style="margin-top:8px">👁️ Ver Tienda</a>
+      <a v-if="tenant" :href="storeUrl" target="_blank" class="admin-link" style="margin-top:8px">👁️ Ver Tienda</a>
       <button @click="logout" class="admin-link" style="margin-top:auto;background:none;border:none;cursor:pointer;text-align:left;padding:10px 14px;color:var(--red)">🚪 Salir</button>
       <div v-if="isSuperAdmin" style="font-size:10px;color:var(--gold);text-align:center;margin-top:4px;font-weight:600">🛡️ Super Admin</div>
     </aside>

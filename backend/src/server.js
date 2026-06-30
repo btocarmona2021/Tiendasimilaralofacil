@@ -150,9 +150,10 @@ app.get('/multitienda/api/tiendas', async (req, res) => {
 });
 
 app.get('/multitienda/*', (req, res) => {
-  if (!req.path.startsWith('/multitienda/api/')) {
-    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+  if (req.path.startsWith('/multitienda/api/')) {
+    return res.status(404).json({ error: 'Endpoint no encontrado' });
   }
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.sendFile(resolve(__dirname, '../public/index.html'));
 });
 

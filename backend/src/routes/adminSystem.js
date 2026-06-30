@@ -317,12 +317,15 @@ router.post('/tenants', async (req, res) => {
 
 router.put('/tenants/:id', async (req, res) => {
   try {
-    const { plan_id, fecha_vencimiento } = req.body;
+    const { plan_id, fecha_vencimiento, is_active } = req.body;
     if (plan_id !== undefined) {
       await pool.query('UPDATE tenants SET plan_id = ? WHERE id = ?', [plan_id || null, req.params.id]);
     }
     if (fecha_vencimiento !== undefined) {
       await pool.query('UPDATE tenants SET fecha_vencimiento = ? WHERE id = ?', [fecha_vencimiento || null, req.params.id]);
+    }
+    if (is_active !== undefined) {
+      await pool.query('UPDATE tenants SET is_active = ? WHERE id = ?', [is_active, req.params.id]);
     }
     const [rows] = await pool.query(
       'SELECT t.id, t.slug, t.rubro, t.store_name, t.is_active, t.created_at, t.plan_id, t.fecha_vencimiento, p.nombre as plan_nombre FROM tenants t LEFT JOIN planes p ON p.id = t.plan_id WHERE t.id = ?',
