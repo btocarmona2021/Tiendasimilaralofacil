@@ -321,6 +321,132 @@ export const presets = {
       payment: 'Efectivo · Transferencia · Tarjeta',
     },
   },
+
+  oceano: {
+    name: "Océano", colorLabel: "Océano",
+    rubro: "oceano", rubroLabel: "Océano",
+    subtitle: "Tu tienda online",
+    promo: "🌟 Bienvenido",
+    theme: {
+      primary: '#2980B9', secondary: '#1A5276', accent: '#F39C12',
+      cream: '#EBF5FB', warm: '#D4E6F1', red: '#2980B9', redDark: '#1A5276',
+      redLight: '#D6EAF8', gold: '#F39C12', goldLight: '#FEF9E7',
+      brown: '#1B2631', text: '#1C2833', lightText: '#5D6D7E',
+      white: '#ffffff', shadowSm: '0 2px 8px rgba(41,128,185,0.08)',
+      shadowMd: '0 4px 16px rgba(41,128,185,0.12)',
+      radius: '14px', radiusSm: '8px', font: "'DM Sans', sans-serif",
+      headerBg: 'linear-gradient(160deg, #2980B9 0%, #1A5276 100%)',
+    },
+    whatsapp: "", currency: "ARS",
+    shipping: { freeFrom: 25000, cost: 2000 },
+    categories: [],
+    info: { hours: '', phone: '', delivery: '', payment: '' },
+  },
+
+  rosa: {
+    name: "Rosa", colorLabel: "Rosa",
+    rubro: "rosa", rubroLabel: "Rosa",
+    subtitle: "Tu tienda online",
+    promo: "🌟 Bienvenido",
+    theme: {
+      primary: '#E91E63', secondary: '#AD1457', accent: '#FFD600',
+      cream: '#FCE4EC', warm: '#F8BBD0', red: '#E91E63', redDark: '#AD1457',
+      redLight: '#FCE4EC', gold: '#FFD600', goldLight: '#FFFDE7',
+      brown: '#3E2723', text: '#212121', lightText: '#9E9E9E',
+      white: '#ffffff', shadowSm: '0 2px 8px rgba(233,30,99,0.08)',
+      shadowMd: '0 4px 16px rgba(233,30,99,0.12)',
+      radius: '18px', radiusSm: '12px', font: "'Playfair Display', serif",
+      headerBg: 'linear-gradient(160deg, #E91E63 0%, #AD1457 100%)',
+    },
+    whatsapp: "", currency: "ARS",
+    shipping: { freeFrom: 25000, cost: 2000 },
+    categories: [],
+    info: { hours: '', phone: '', delivery: '', payment: '' },
+  },
+
+  amber: {
+    name: "Ámbar", colorLabel: "Ámbar",
+    rubro: "amber", rubroLabel: "Ámbar",
+    subtitle: "Tu tienda online",
+    promo: "🌟 Bienvenido",
+    theme: {
+      primary: '#FF8F00', secondary: '#E65100', accent: '#212121',
+      cream: '#FFF8E1', warm: '#FFECB3', red: '#FF8F00', redDark: '#E65100',
+      redLight: '#FFF8E1', gold: '#FF8F00', goldLight: '#FFFDE7',
+      brown: '#3E2723', text: '#212121', lightText: '#9E9E9E',
+      white: '#ffffff', shadowSm: '0 2px 8px rgba(255,143,0,0.08)',
+      shadowMd: '0 4px 16px rgba(255,143,0,0.12)',
+      radius: '10px', radiusSm: '6px', font: "'DM Sans', sans-serif",
+      headerBg: 'linear-gradient(160deg, #FF8F00 0%, #E65100 100%)',
+    },
+    whatsapp: "", currency: "ARS",
+    shipping: { freeFrom: 25000, cost: 2000 },
+    categories: [],
+    info: { hours: '', phone: '', delivery: '', payment: '' },
+  },
+
+  indigo: {
+    name: "Índigo", colorLabel: "Índigo",
+    rubro: "indigo", rubroLabel: "Índigo",
+    subtitle: "Tu tienda online",
+    promo: "🌟 Bienvenido",
+    theme: {
+      primary: '#3F51B5', secondary: '#283593', accent: '#00BCD4',
+      cream: '#E8EAF6', warm: '#C5CAE9', red: '#3F51B5', redDark: '#283593',
+      redLight: '#E8EAF6', gold: '#00BCD4', goldLight: '#E0F7FA',
+      brown: '#1A1A2E', text: '#1A1A2E', lightText: '#7986CB',
+      white: '#ffffff', shadowSm: '0 2px 8px rgba(63,81,181,0.08)',
+      shadowMd: '0 4px 16px rgba(63,81,181,0.12)',
+      radius: '8px', radiusSm: '4px', font: "'Inter', 'DM Sans', sans-serif",
+      headerBg: 'linear-gradient(160deg, #3F51B5 0%, #283593 100%)',
+    },
+    whatsapp: "", currency: "ARS",
+    shipping: { freeFrom: 25000, cost: 2000 },
+    categories: [],
+    info: { hours: '', phone: '', delivery: '', payment: '' },
+  },
+
+  grafito: {
+    name: "Grafito", colorLabel: "Grafito",
+    rubro: "grafito", rubroLabel: "Grafito",
+    subtitle: "Tu tienda online",
+    promo: "🌟 Bienvenido",
+    theme: {
+      primary: '#424242', secondary: '#212121', accent: '#00BCD4',
+      cream: '#F5F5F5', warm: '#E0E0E0', red: '#424242', redDark: '#212121',
+      redLight: '#F5F5F5', gold: '#00BCD4', goldLight: '#E0F7FA',
+      brown: '#1A1A1A', text: '#212121', lightText: '#9E9E9E',
+      white: '#ffffff', shadowSm: '0 2px 8px rgba(66,66,66,0.08)',
+      shadowMd: '0 4px 16px rgba(66,66,66,0.12)',
+      radius: '6px', radiusSm: '4px', font: "'Inter', 'DM Sans', sans-serif",
+      headerBg: 'linear-gradient(160deg, #424242 0%, #212121 100%)',
+    },
+    whatsapp: "", currency: "ARS",
+    shipping: { freeFrom: 25000, cost: 2000 },
+    categories: [],
+    info: { hours: '', phone: '', delivery: '', payment: '' },
+  },
+
+  lima: {
+    name: "Lima", colorLabel: "Lima",
+    rubro: "lima", rubroLabel: "Lima",
+    subtitle: "Tu tienda online",
+    promo: "🌟 Bienvenido",
+    theme: {
+      primary: '#8BC34A', secondary: '#558B2F', accent: '#FF6F00',
+      cream: '#F1F8E9', warm: '#DCEDC8', red: '#8BC34A', redDark: '#558B2F',
+      redLight: '#F1F8E9', gold: '#FF6F00', goldLight: '#FFF3E0',
+      brown: '#33691E', text: '#1B1B1B', lightText: '#689F38',
+      white: '#ffffff', shadowSm: '0 2px 8px rgba(139,195,74,0.08)',
+      shadowMd: '0 4px 16px rgba(139,195,74,0.12)',
+      radius: '24px', radiusSm: '14px', font: "'DM Sans', sans-serif",
+      headerBg: 'linear-gradient(160deg, #8BC34A 0%, #558B2F 100%)',
+    },
+    whatsapp: "", currency: "ARS",
+    shipping: { freeFrom: 25000, cost: 2000 },
+    categories: [],
+    info: { hours: '', phone: '', delivery: '', payment: '' },
+  },
 }
 
 export function getPreset(rubro) {
@@ -329,9 +455,12 @@ export function getPreset(rubro) {
 
 export function getTheme(themePreset) {
   if (!themePreset) return null
-  // Look up by key directly
   if (presets[themePreset]) return presets[themePreset]
-  // Look up by color label (case-insensitive)
   const key = Object.keys(presets).find(k => presets[k].colorLabel?.toLowerCase() === themePreset.toLowerCase())
   return key ? presets[key] : null
 }
+
+export const themeOptions = Object.keys(presets).map(k => ({
+  value: k,
+  label: presets[k].colorLabel || presets[k].name || k,
+}))

@@ -22,13 +22,7 @@
         </select>
         <label>Tema de colores</label>
         <select v-model="form.theme_preset">
-          <option value="fiambres">🔴 Rojo</option>
-          <option value="ferreteria">🟠 Naranja</option>
-          <option value="verduleria">🟢 Verde</option>
-          <option value="libreria">🔵 Azul</option>
-          <option value="carniceria">🔴 Rojo Oscuro</option>
-          <option value="panaderia">🟤 Marrón</option>
-          <option value="indumentaria">🟣 Púrpura</option>
+          <option v-for="t in themes" :key="t.value" :value="t.value">{{ t.label }}</option>
         </select>
         <label>Subtítulo (header)</label>
         <input v-model="form.subtitle" placeholder="Ej: Productos frescos">
@@ -133,11 +127,13 @@ import { ref, onMounted } from 'vue'
 import api from '../services/api.js'
 import AdminLayout from '../components/AdminLayout.vue'
 import { useAuthStore } from '../stores/auth.js'
+import { themeOptions } from '../assets/store.config.js'
 
 const auth = useAuthStore()
 const form = ref({})
 const msg = ref('')
 const resetRubro = ref('ferreteria')
+const themes = themeOptions
 const resetting = ref(false)
 const cleaning = ref(false)
 const seeding = ref(false)
