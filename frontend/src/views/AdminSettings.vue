@@ -20,6 +20,16 @@
           <option value="libreria">📚 Librería</option>
           <option value="indumentaria">👕 Indumentaria</option>
         </select>
+        <label>Tema de colores</label>
+        <select v-model="form.theme_preset">
+          <option value="fiambres">🔴 Rojo</option>
+          <option value="ferreteria">🟠 Naranja</option>
+          <option value="verduleria">🟢 Verde</option>
+          <option value="libreria">🔵 Azul</option>
+          <option value="carniceria">🔴 Rojo Oscuro</option>
+          <option value="panaderia">🟤 Marrón</option>
+          <option value="indumentaria">🟣 Púrpura</option>
+        </select>
         <label>Subtítulo (header)</label>
         <input v-model="form.subtitle" placeholder="Ej: Productos frescos">
         <label>Promo banner</label>

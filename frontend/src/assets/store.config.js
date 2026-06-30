@@ -1,7 +1,6 @@
 export const presets = {
   fiambres: {
-    name: "Fiambres",
-    rubro: "fiambres",
+    name: "Fiambres", colorLabel: "Rojo", rubro: "fiambres",
     rubroLabel: "Fiambrería",
     subtitle: "Productos frescos · Pedidos por WhatsApp",
     promo: "🎉 Pedidos de lunes a sábado — Consultá disponibilidad y envío",
@@ -46,7 +45,7 @@ export const presets = {
   },
 
   ferreteria: {
-    name: "Ferretería",
+    name: "Ferretería", colorLabel: "Naranja",
     slug: "ferreteria",
     rubro: "ferreteria",
     rubroLabel: "Ferretería",
@@ -94,7 +93,7 @@ export const presets = {
   },
 
   verduleria: {
-    name: "Verdulería",
+    name: "Verdulería", colorLabel: "Verde",
     slug: "verduleria",
     rubro: "verduleria",
     rubroLabel: "Verdulería",
@@ -136,7 +135,7 @@ export const presets = {
     },
   },
   carniceria: {
-    name: "Carnicería",
+    name: "Carnicería", colorLabel: "Rojo Oscuro",
     slug: "carniceria",
     rubro: "carniceria",
     rubroLabel: "Carnicería",
@@ -183,7 +182,7 @@ export const presets = {
   },
 
   panaderia: {
-    name: "Panadería",
+    name: "Panadería", colorLabel: "Marrón",
     slug: "panaderia",
     rubro: "panaderia",
     rubroLabel: "Panadería",
@@ -230,7 +229,7 @@ export const presets = {
   },
 
   libreria: {
-    name: "Librería",
+    name: "Librería", colorLabel: "Azul",
     slug: "libreria",
     rubro: "libreria",
     rubroLabel: "Librería",
@@ -277,7 +276,7 @@ export const presets = {
   },
 
   indumentaria: {
-    name: "Indumentaria",
+    name: "Indumentaria", colorLabel: "Púrpura",
     slug: "indumentaria",
     rubro: "indumentaria",
     rubroLabel: "Indumentaria",
@@ -326,4 +325,13 @@ export const presets = {
 
 export function getPreset(rubro) {
   return presets[rubro] || presets.fiambres
+}
+
+export function getTheme(themePreset) {
+  if (!themePreset) return null
+  // Look up by key directly
+  if (presets[themePreset]) return presets[themePreset]
+  // Look up by color label (case-insensitive)
+  const key = Object.keys(presets).find(k => presets[k].colorLabel?.toLowerCase() === themePreset.toLowerCase())
+  return key ? presets[key] : null
 }

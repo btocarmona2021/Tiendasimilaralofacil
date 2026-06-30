@@ -138,7 +138,7 @@ import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCartStore } from './stores/cart.js'
 import api from './services/api.js'
-import { presets, getPreset } from './assets/store.config.js'
+import { presets, getPreset, getTheme } from './assets/store.config.js'
 import ProductCard from './components/ProductCard.vue'
 import ProductModal from './components/ProductModal.vue'
 import ComboCard from './components/ComboCard.vue'
@@ -153,7 +153,15 @@ const cart = useCartStore()
 
 const rubro = ref('ferreteria')
 const dbSettings = ref({})
-const preset = computed(() => getPreset(rubro.value))
+const preset = computed(() => {
+  const s = dbSettings.value
+  const tp = s.theme_preset
+  if (tp) {
+    const theme = getTheme(tp)
+    if (theme) return theme
+  }
+  return getPreset(rubro.value)
+})
 
 const config = computed(() => {
   const p = preset.value

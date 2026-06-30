@@ -2,7 +2,7 @@ import { Router } from 'express';
 import pool from '../config/db.js';
 import { authMiddleware } from '../middleware/auth.js';
 
-const SETTING_COLUMNS = ['rubro', 'store_name', 'logo', 'subtitle', 'promo', 'whatsapp', 'currency', 'shipping_free', 'shipping_cost', 'info_hours', 'info_phone', 'info_delivery', 'info_payment', 'mp_alias', 'mp_cvu', 'mp_holder', 'mp_access_token', 'bank_entity', 'bank_cbu', 'bank_alias', 'bank_holder'];
+const SETTING_COLUMNS = ['rubro', 'store_name', 'logo', 'subtitle', 'promo', 'whatsapp', 'currency', 'shipping_free', 'shipping_cost', 'info_hours', 'info_phone', 'info_delivery', 'info_payment', 'mp_alias', 'mp_cvu', 'mp_holder', 'mp_access_token', 'bank_entity', 'bank_cbu', 'bank_alias', 'bank_holder', 'theme_preset'];
 
 const router = Router();
 
