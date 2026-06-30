@@ -88,6 +88,10 @@
       <div class="setting-group" v-if="auth.isSuperAdmin" style="border:2px solid var(--red)">
         <h3>⚠️ Sistema</h3>
 
+        <label>Logo principal de Multitienda</label>
+        <input type="file" accept="image/*" @change="uploadMainLogo" ref="logoInput" style="font-size:12px;padding:4px;margin-bottom:10px">
+        <p v-if="logoMsg" style="font-size:12px;margin-bottom:8px" :style="{color: logoMsg.includes('Error') ? 'var(--red)' : 'green'}">{{ logoMsg }}</p>
+
         <label style="margin-top:0">Rubro para datos de ejemplo</label>
         <select v-model="resetRubro" style="margin-bottom:10px">
           <option value="fiambres">🥩 Fiambrería</option>
@@ -140,6 +144,24 @@ const seeding = ref(false)
 const backingUp = ref(false)
 const sysMsg = ref('')
 const fileInput = ref(null)
+const logoInput = ref(null)
+const logoMsg = ref('')
+
+async function uploadMainLogo() {
+  const file = logoInput.value?.files?.[0]
+  if (!file) return
+  logoMsg.value = ''
+  const formData = new FormData()
+  formData.append('logo', file)
+  try {
+    const { data } = await api.post('/admin/system/upload-main-logo', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    logoMsg.value = '✅ Logo actualizado. Refrescá la landing page.'
+  } catch (e) {
+    logoMsg.value = '❌ Error: ' + (e.response?.data?.error || e.message)
+  }
+}
 
 async function load() {
   const { data } = await api.get('/settings')

@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
+import multer from 'multer';
+import { extname } from 'path';
 import pool from '../config/db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { superAdminMiddleware } from '../middleware/superAdmin.js';
@@ -10,6 +12,7 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 const __imgDirname = dirname(fileURLToPath(import.meta.url));
 const uploadBase = resolve(__imgDirname, '../../uploads');
+const publicDir = resolve(__imgDirname, '../../public');
 
 const router = Router();
 router.use(authMiddleware, superAdminMiddleware);
@@ -377,6 +380,27 @@ router.post('/webp-todas', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+router.post('/upload-main-logo', (req, res) => {
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, publicDir),
+    filename: (req, file, cb) => cb(null, 'logo.png'),
+  });
+  const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+      const ext = extname(file.originalname).toLowerCase();
+      cb(null, ['.jpg', '.jpeg', '.png', '.webp', '.gif'].includes(ext));
+    },
+  }).single('logo');
+
+  upload(req, res, (err) => {
+    if (err) return res.status(400).json({ error: err.message });
+    if (!req.file) return res.status(400).json({ error: 'No se subió ninguna imagen' });
+    res.json({ message: 'Logo actualizado correctamente', url: '/multitienda/logo.png' });
+  });
 });
 
 export default router;
