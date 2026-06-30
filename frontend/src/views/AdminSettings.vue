@@ -85,7 +85,7 @@
       </div>
       </template>
 
-      <div class="setting-group" v-if="auth.isSuperAdmin" style="border:2px solid var(--red)">
+      <div class="setting-group" v-if="auth.role === 'super_admin'" style="border:2px solid var(--red)">
         <h3>⚠️ Sistema</h3>
 
         <label>Logo principal de Multitienda</label>
@@ -125,7 +125,7 @@
       </div>
     </div>
 
-    <button class="btn-save" @click="save">💾 Guardar configuración</button>
+    <button v-if="tenant" class="btn-save" @click="save">💾 Guardar configuración</button>
     <p v-if="msg" class="msg">{{ msg }}</p>
   </AdminLayout>
 </template>

@@ -35,19 +35,6 @@
             <option :value="1">Sí</option>
             <option :value="0">No</option>
           </select>
-
-          <hr style="margin:14px 0;border:none;border-top:1px solid var(--warm)">
-          <label style="color:var(--brown);font-weight:700">Registrar pago manual</label>
-          <label>Plan a asignar</label>
-          <select v-model="pagoPlanId">
-            <option v-for="p in planes" :key="p.id" :value="p.id" :disabled="!p.activo">{{ p.nombre }} (${{ Number(p.precio).toLocaleString() }})</option>
-          </select>
-          <label>Monto ($)</label>
-          <input v-model="pagoMonto" type="number" step="0.01" placeholder="0">
-          <button class="btn-save" @click="registrarPago" :disabled="pagando" style="margin-top:8px;font-size:13px">
-            {{ pagando ? 'Registrando...' : '💰 Registrar pago y extender 30 días' }}
-          </button>
-          <p v-if="pagoMsg" style="font-size:12px;margin-top:8px" :style="{color: pagoMsg.includes('Error') ? 'var(--red)' : 'green'}">{{ pagoMsg }}</p>
         </template>
 
         <div v-if="editing && editing.store_name" style="margin-top:12px;padding:12px;background:var(--cream);border-radius:8px;font-size:13px">
@@ -66,38 +53,42 @@
       </div>
     </div>
 
+    <div class="table-wrap">
     <table class="admin-table">
       <thead>
         <tr>
           <th>Slug</th>
           <th>Nombre</th>
           <th>Rubro</th>
-          <th>Logo</th>
           <th>Plan</th>
           <th>Vence</th>
-          <th>Activa</th>
+          <th>Logo</th>
+          <th>Estado</th>
+          <th>Admin</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="t in tenants" :key="t.id">
-          <td>{{ t.slug }}</td>
+          <td><strong>{{ t.slug }}</strong></td>
           <td>{{ t.store_name }}</td>
           <td>{{ t.rubro }}</td>
-          <td><img v-if="t.logo" :src="t.logo" style="max-width:60px;max-height:30px;border-radius:4px;vertical-align:middle"></td>
           <td>{{ t.plan_nombre || '—' }}</td>
           <td>{{ t.fecha_vencimiento ? new Date(t.fecha_vencimiento).toLocaleDateString() : '—' }}</td>
-          <td>{{ t.is_active ? '✅' : '❌' }}</td>
+          <td><img v-if="t.logo" :src="t.logo" class="mini-logo"></td>
+          <td>{{ t.is_active ? '✅ Activa' : '❌ Inactiva' }}</td>
+          <td><a :href="'/multitienda/' + t.slug + '/admin/'" target="_blank" class="admin-link-btn">🔗 Ir</a></td>
           <td>
             <button class="btn-sm" @click="edit(t)">✏️</button>
             <button class="btn-sm btn-danger" @click="remove(t)">🗑️</button>
           </td>
         </tr>
         <tr v-if="!tenants.length">
-          <td colspan="8" style="text-align:center;color:var(--light-text);padding:24px">No hay tiendas</td>
+          <td colspan="9" style="text-align:center;color:var(--light-text);padding:24px">No hay tiendas</td>
         </tr>
       </tbody>
     </table>
+    </div>
   </AdminLayout>
 </template>
 
@@ -112,10 +103,6 @@ const showForm = ref(false)
 const editing = ref(null)
 const formError = ref('')
 const form = ref({ slug: '', rubro: 'ferreteria', admin_user: 'admin', admin_pass: 'admin123', plan_id: null, fecha_vencimiento: '', is_active: 1 })
-const pagoPlanId = ref(null)
-const pagoMonto = ref(0)
-const pagando = ref(false)
-const pagoMsg = ref('')
 
 const rubroOptions = [
   { value: 'fiambres', label: '🥩 Fiambres' },
@@ -153,9 +140,6 @@ function edit(t) {
     fecha_vencimiento: t.fecha_vencimiento ? t.fecha_vencimiento.slice(0, 10) : '',
     is_active: t.is_active ? 1 : 0,
   }
-  pagoPlanId.value = t.plan_id || null
-  pagoMonto.value = 0
-  pagoMsg.value = ''
   formError.value = ''
   showForm.value = true
 }
@@ -182,24 +166,6 @@ async function save() {
   }
 }
 
-async function registrarPago() {
-  if (!pagoPlanId.value) { pagoMsg.value = '❌ Seleccioná un plan'; return }
-  pagoMsg.value = ''
-  pagando.value = true
-  try {
-    const { data } = await api.post('/pagos-planes/registrar-pago-manual', {
-      tenant_id: editing.value.id,
-      plan_id: pagoPlanId.value,
-      monto: pagoMonto.value || 0,
-    })
-    pagoMsg.value = `✅ Pago registrado. Vence: ${new Date(data.vence).toLocaleDateString()}`
-    await load()
-  } catch (e) {
-    pagoMsg.value = '❌ Error: ' + (e.response?.data?.error || e.message)
-  }
-  pagando.value = false
-}
-
 async function remove(t) {
   if (!confirm(`¿Eliminar la tienda "${t.slug}"? Se borrarán todos sus productos, pedidos y reseñas.`)) return
   try {
@@ -215,22 +181,24 @@ onMounted(load)
 
 <style scoped>
 .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.btn-add { background: var(--red); color: #fff; border: none; border-radius: 10px; padding: 10px 20px; font-weight: 700; cursor: pointer; }
+.btn-add { background: var(--red); color: #fff; border: none; border-radius: 10px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.table-wrap { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+.admin-table th, .admin-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--warm); font-size: 13px; white-space: nowrap; }
+.admin-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--light-text); background: var(--white); }
+.admin-table tbody tr:hover { background: var(--cream); }
+.mini-logo { max-width: 50px; max-height: 28px; border-radius: 4px; display: block; }
+.admin-link-btn { display: inline-block; background: var(--red); color: #fff !important; text-decoration: none; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 6px; }
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; display: flex; align-items: center; justify-content: center; }
-.modal-card { background: #fff; border-radius: var(--radius); padding: 24px; width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto; }
+.modal-card { background: #fff; border-radius: 14px; padding: 24px; width: 100%; max-width: 420px; }
 .modal-card h3 { margin-bottom: 16px; color: var(--brown); }
 .modal-card label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--light-text); margin-bottom: 4px; margin-top: 10px; font-weight: 600; }
-.modal-card input, .modal-card select { width: 100%; border: 2px solid var(--warm); border-radius: 8px; padding: 9px 12px; font-size: 13px; margin-bottom: 4px; outline: none; }
+.modal-card input, .modal-card select { width: 100%; border: 2px solid var(--warm); border-radius: 8px; padding: 9px 12px; font-size: 13px; margin-bottom: 4px; outline: none; font-family: 'DM Sans', sans-serif; }
 .modal-card input:focus, .modal-card select:focus { border-color: var(--red); }
 .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
 .btn-save { flex: 1; background: var(--red); color: #fff; border: none; border-radius: 8px; padding: 10px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-.btn-save:disabled { opacity: 0.6; }
 .btn-cancel { flex: 1; background: var(--warm); color: var(--text); border: none; border-radius: 8px; padding: 10px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 .form-error { color: var(--red); font-size: 12px; margin-top: 8px; }
-.admin-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-.admin-table th, .admin-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--warm); font-size: 14px; }
-.admin-table th { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--light-text); }
-.btn-sm { background: none; border: 1px solid var(--warm); border-radius: 6px; padding: 4px 8px; cursor: pointer; }
+.btn-sm { background: none; border: 1px solid var(--warm); border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 13px; }
 .btn-danger { color: var(--red); border-color: var(--red); }
-hr { border: none; border-top: 1px solid var(--warm); }
 </style>
