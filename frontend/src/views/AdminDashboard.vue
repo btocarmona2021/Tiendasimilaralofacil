@@ -62,4 +62,5 @@ onMounted(async () => {
 }
 .stat-num { font-size: 32px; font-weight: 900; color: var(--red); font-family: 'Playfair Display', serif; }
 .stat-label { font-size: 12px; color: var(--light-text); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+.global-welcome { text-align: center; padding: 48px 0; }
 </style>

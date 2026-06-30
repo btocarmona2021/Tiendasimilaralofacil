@@ -9,7 +9,8 @@
       <router-link v-if="tenant" :to="adminPath('orders')" class="admin-link">📋 Pedidos</router-link>
       <router-link v-if="tenant" :to="adminPath('discounts')" class="admin-link">🏷️ Códigos</router-link>
       <router-link v-if="tenant" :to="adminPath('reviews')" class="admin-link">⭐ Reseñas</router-link>
-      <router-link v-if="!tenant && isSuperAdmin" :to="adminPath('settings')" class="admin-link">🏪 Tiendas</router-link>
+      <router-link v-if="!tenant && isSuperAdmin" :to="adminPath('tenants')" class="admin-link">🏪 Tiendas</router-link>
+      <router-link v-if="!tenant && isSuperAdmin" :to="adminPath('plans')" class="admin-link">📋 Planes</router-link>
       <router-link v-if="isSuperAdmin" :to="adminPath('users')" class="admin-link">👥 Usuarios</router-link>
       <router-link :to="adminPath('settings')" class="admin-link">⚙️ Configuración</router-link>
       <a v-if="tenant" :href="storeUrl" target="_blank" class="admin-link" style="margin-top:8px">👁️ Ver Tienda</a>

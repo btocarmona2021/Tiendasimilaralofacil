@@ -9,7 +9,7 @@ const router = Router();
 router.use(authMiddleware, superAdminMiddleware);
 
 router.get('/', async (req, res) => {
-  const [rows] = await pool.query('SELECT id, username, role, created_at FROM users ORDER BY created_at');
+  const [rows] = await pool.query('SELECT id, username, role, created_at FROM users WHERE tenant_id IS NULL ORDER BY created_at');
   res.json(rows);
 });
 

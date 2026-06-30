@@ -13,6 +13,8 @@ import AdminDiscounts from '../views/AdminDiscounts.vue'
 import AdminReviews from '../views/AdminReviews.vue'
 import AdminSettings from '../views/AdminSettings.vue'
 import AdminUsers from '../views/AdminUsers.vue'
+import AdminPlans from '../views/AdminPlans.vue'
+import AdminTenants from '../views/AdminTenants.vue'
 
 const routes = [
   { path: '/', name: 'landing', component: LandingPage },
@@ -31,6 +33,8 @@ const routes = [
   { path: '/admin/reviews', name: 'admin-reviews', component: AdminReviews, meta: { requiresAuth: true } },
   { path: '/admin/settings', name: 'admin-settings', component: AdminSettings, meta: { requiresAuth: true } },
   { path: '/admin/users', name: 'admin-users', component: AdminUsers, meta: { requiresAuth: true } },
+  { path: '/admin/plans', name: 'admin-plans', component: AdminPlans, meta: { requiresAuth: true } },
+  { path: '/admin/tenants', name: 'admin-tenants', component: AdminTenants, meta: { requiresAuth: true } },
   { path: '/:tenant/admin/login', name: 'tenant-admin-login', component: AdminLogin },
   { path: '/:tenant/admin', name: 'tenant-admin-dashboard', component: AdminDashboard, meta: { requiresAuth: true } },
   { path: '/:tenant/admin/products', name: 'tenant-admin-products', component: AdminProducts, meta: { requiresAuth: true } },
@@ -40,6 +44,8 @@ const routes = [
   { path: '/:tenant/admin/discounts', name: 'tenant-admin-discounts', component: AdminDiscounts, meta: { requiresAuth: true } },
   { path: '/:tenant/admin/reviews', name: 'tenant-admin-reviews', component: AdminReviews, meta: { requiresAuth: true } },
   { path: '/:tenant/admin/settings', name: 'tenant-admin-settings', component: AdminSettings, meta: { requiresAuth: true } },
+  { path: '/:tenant/admin/plans', name: 'tenant-admin-plans', component: AdminPlans, meta: { requiresAuth: true } },
+  { path: '/:tenant/admin/tenants', name: 'tenant-admin-tenants', component: AdminTenants, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({

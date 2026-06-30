@@ -107,19 +107,12 @@
 
         <hr style="margin:16px 0;border:none;border-top:1px solid var(--warm)">
 
-        <details style="margin-bottom:12px">
-          <summary style="cursor:pointer;font-weight:700;font-size:13px;color:var(--brown)">🏪 Gestionar Tiendas ({{ tenants.length }})</summary>
-          <div style="margin-top:10px;font-size:12px">
-            <div v-for="t in tenants" :key="t.id" style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--warm)">
-              <span><strong>{{ t.slug }}</strong> — {{ t.store_name }} <span v-if="t.plan_nombre" style="color:var(--light-text)">({{ t.plan_nombre }})</span></span>
-              <span>
-                <span v-if="!t.is_active" style="color:var(--red);font-size:11px">❌ Inactiva</span>
-                <button class="btn-sm" @click="toggleTenant(t)" style="margin-left:8px">{{ t.is_active ? '❌' : '✅' }}</button>
-                <span style="font-size:10px;color:var(--light-text);margin-left:8px">vence: {{ t.fecha_vencimiento ? new Date(t.fecha_vencimiento).toLocaleDateString() : '—' }}</span>
-              </span>
-            </div>
-          </div>
-        </details>
+        <p style="font-size:13px;margin-bottom:8px">📋 <router-link to="/admin/tenants" style="color:var(--red);font-weight:600">Ir a Gestión de Tiendas →</router-link></p>
+        <p style="font-size:13px;margin-bottom:12px">📋 <router-link to="/admin/plans" style="color:var(--red);font-weight:600">Ir a Gestión de Planes →</router-link></p>
+
+        <button class="btn-outline" @click="convertWebp" :disabled="converting" style="width:100%;margin-bottom:12px">
+          {{ converting ? 'Convirtiendo...' : '🖼️ Convertir imágenes a WebP' }}
+        </button>
 
         <label>Backup / Restore</label>
         <p style="font-size:12px;color:var(--light-text);margin-bottom:8px">Descargá un backup JSON de todos los datos o restaurá desde uno.</p>
@@ -158,22 +151,19 @@ const sysMsg = ref('')
 const fileInput = ref(null)
 const logoInput = ref(null)
 const logoMsg = ref('')
-const tenants = ref([])
+const converting = ref(false)
 
-async function loadTenants() {
+async function convertWebp() {
+  if (!confirm('¿Convertir todas las imágenes JPG/PNG a WebP? Esta acción no se puede deshacer.')) return
+  converting.value = true
+  sysMsg.value = ''
   try {
-    const { data } = await api.get('/admin/system/tenants')
-    tenants.value = data
-  } catch {}
-}
-
-async function toggleTenant(t) {
-  try {
-    await api.put(`/admin/system/tenants/${t.id}`, { is_active: t.is_active ? 0 : 1 })
-    t.is_active = t.is_active ? 0 : 1
+    const { data } = await api.post('/admin/system/webp-todas')
+    sysMsg.value = `✅ ${data.message}`
   } catch (e) {
-    alert('Error: ' + (e.response?.data?.error || e.message))
+    sysMsg.value = '❌ Error: ' + (e.response?.data?.error || e.message)
   }
+  converting.value = false
 }
 
 async function uploadMainLogo() {
@@ -324,10 +314,7 @@ async function restoreBackup(e) {
   fileInput.value.value = ''
 }
 
-onMounted(() => {
-  load()
-  loadTenants()
-})
+onMounted(load)
 </script>
 
 <style scoped>
