@@ -13,6 +13,7 @@
         <label>Rubro</label>
         <select v-model="form.rubro">
           <option value="fiambres">🥩 Fiambrería</option>
+          <option value="ferreteria">🔧 Ferretería</option>
           <option value="herramientas">🔧 Herramientas</option>
           <option value="verduleria">🥬 Verdulería</option>
           <option value="carniceria">🥩 Carnicería</option>
@@ -88,6 +89,7 @@
 
         <label style="margin-top:0">Rubro para datos de ejemplo</label>
         <select v-model="resetRubro" style="margin-bottom:10px">
+          <option value="ferreteria">🔧 Ferretería</option>
           <option value="herramientas">🔧 Herramientas</option>
         </select>
 

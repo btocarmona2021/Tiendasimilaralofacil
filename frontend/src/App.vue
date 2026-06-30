@@ -28,7 +28,7 @@
         <div class="section" v-for="cat in filteredCategories" :key="cat.slug" :id="cat.slug">
           <h2 class="section-title">{{ cat.icon }} {{ cat.name }}</h2>
           <div class="product-list">
-            <ProductCard v-for="(p, i) in getProducts(cat.slug)" :key="p.id"
+            <ProductCard v-for="(p, i) in getProducts(cat.slug)" :key="p?.id || i"
               :product="p" :index="i"
               @change-qty="changeQty"
               @show-detail="selectedProduct = p" />
@@ -231,7 +231,7 @@ const cssVars = computed(() => ({
 
 function getProducts(catSlug) {
   if (!Array.isArray(products.value)) return []
-  let filtered = products.value.filter(p => p.category_slug === catSlug)
+  let filtered = products.value.filter(p => p && p.category_slug === catSlug)
   if (searchQuery.value.trim()) {
     const q = searchQuery.value.toLowerCase().trim()
     filtered = filtered.filter(p => p.name.toLowerCase().includes(q))

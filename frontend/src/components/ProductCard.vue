@@ -39,7 +39,7 @@ const props = defineProps({
 defineEmits(['changeQty', 'showDetail'])
 
 const cart = useCartStore()
-const qty = computed(() => cart.items[props.product.id] || 0)
+const qty = computed(() => props.product ? (cart.items[props.product.id] || 0) : 0)
 
 function fmt(n) { return '$' + Number(n).toLocaleString('es-AR') }
 </script>
