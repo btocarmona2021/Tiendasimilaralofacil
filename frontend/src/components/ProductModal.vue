@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-overlay" :class="{ open: product }" @click.self="$emit('close')">
+  <div v-if="product" class="modal-overlay" :class="{ open: product }" @click.self="$emit('close')">
     <div class="modal-content">
       <button class="modal-close" @click="$emit('close')">✕</button>
       <div class="modal-image">
