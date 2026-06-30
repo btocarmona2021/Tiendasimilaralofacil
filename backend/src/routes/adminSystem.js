@@ -25,6 +25,25 @@ function productImageUrl(name) {
   return `/multitienda/seed-images/${s}.jpg`;
 }
 
+router.get('/stats', async (req, res) => {
+  try {
+    const [tenants] = await pool.query('SELECT COUNT(*) as c FROM tenants');
+    const [products] = await pool.query('SELECT COUNT(*) as c FROM products');
+    const [orders] = await pool.query('SELECT COUNT(*) as c FROM orders');
+    const [pending] = await pool.query("SELECT COUNT(*) as c FROM orders WHERE status = 'pendiente'");
+    const [today] = await pool.query("SELECT COALESCE(SUM(total),0) as c FROM orders WHERE DATE(created_at) = CURDATE() AND status != 'cancelado'");
+    res.json({
+      tenants: tenants[0].c,
+      products: products[0].c,
+      orders: orders[0].c,
+      pending: pending[0].c,
+      todayRevenue: Number(today[0].c),
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.post('/reset', async (req, res) => {
   try {
     const { rubro, slug: bodySlug } = req.body;

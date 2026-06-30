@@ -35,6 +35,19 @@
             <option :value="1">Sí</option>
             <option :value="0">No</option>
           </select>
+
+          <hr style="margin:14px 0;border:none;border-top:1px solid var(--warm)">
+          <label style="color:var(--brown);font-weight:700">Registrar pago manual</label>
+          <label>Plan a asignar</label>
+          <select v-model="pagoPlanId">
+            <option v-for="p in planes" :key="p.id" :value="p.id" :disabled="!p.activo">{{ p.nombre }} (${{ Number(p.precio).toLocaleString() }})</option>
+          </select>
+          <label>Monto ($)</label>
+          <input v-model="pagoMonto" type="number" step="0.01" placeholder="0">
+          <button class="btn-save" @click="registrarPago" :disabled="pagando" style="margin-top:8px;font-size:13px">
+            {{ pagando ? 'Registrando...' : '💰 Registrar pago y extender 30 días' }}
+          </button>
+          <p v-if="pagoMsg" style="font-size:12px;margin-top:8px" :style="{color: pagoMsg.includes('Error') ? 'var(--red)' : 'green'}">{{ pagoMsg }}</p>
         </template>
 
         <div v-if="editing && editing.store_name" style="margin-top:12px;padding:12px;background:var(--cream);border-radius:8px;font-size:13px">
@@ -99,6 +112,10 @@ const showForm = ref(false)
 const editing = ref(null)
 const formError = ref('')
 const form = ref({ slug: '', rubro: 'ferreteria', admin_user: 'admin', admin_pass: 'admin123', plan_id: null, fecha_vencimiento: '', is_active: 1 })
+const pagoPlanId = ref(null)
+const pagoMonto = ref(0)
+const pagando = ref(false)
+const pagoMsg = ref('')
 
 const rubroOptions = [
   { value: 'fiambres', label: '🥩 Fiambres' },
@@ -136,6 +153,9 @@ function edit(t) {
     fecha_vencimiento: t.fecha_vencimiento ? t.fecha_vencimiento.slice(0, 10) : '',
     is_active: t.is_active ? 1 : 0,
   }
+  pagoPlanId.value = t.plan_id || null
+  pagoMonto.value = 0
+  pagoMsg.value = ''
   formError.value = ''
   showForm.value = true
 }
@@ -146,7 +166,7 @@ async function save() {
     if (editing.value) {
       const body = {}
       if (form.value.plan_id !== editing.value.plan_id) body.plan_id = form.value.plan_id
-      if (form.value.fecha_vencimiento !== editing.value.fecha_vencimiento?.slice(0, 10)) body.fecha_vencimiento = form.value.fecha_vencimiento || null
+      if (form.value.fecha_vencimiento !== (editing.value.fecha_vencimiento || '').slice(0, 10)) body.fecha_vencimiento = form.value.fecha_vencimiento || null
       if (form.value.is_active !== editing.value.is_active) body.is_active = form.value.is_active
       if (Object.keys(body).length) {
         await api.put(`/admin/system/tenants/${editing.value.id}`, body)
@@ -160,6 +180,24 @@ async function save() {
   } catch (e) {
     formError.value = e.response?.data?.error || 'Error al guardar'
   }
+}
+
+async function registrarPago() {
+  if (!pagoPlanId.value) { pagoMsg.value = '❌ Seleccioná un plan'; return }
+  pagoMsg.value = ''
+  pagando.value = true
+  try {
+    const { data } = await api.post('/pagos-planes/registrar-pago-manual', {
+      tenant_id: editing.value.id,
+      plan_id: pagoPlanId.value,
+      monto: pagoMonto.value || 0,
+    })
+    pagoMsg.value = `✅ Pago registrado. Vence: ${new Date(data.vence).toLocaleDateString()}`
+    await load()
+  } catch (e) {
+    pagoMsg.value = '❌ Error: ' + (e.response?.data?.error || e.message)
+  }
+  pagando.value = false
 }
 
 async function remove(t) {
@@ -179,17 +217,20 @@ onMounted(load)
 .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .btn-add { background: var(--red); color: #fff; border: none; border-radius: 10px; padding: 10px 20px; font-weight: 700; cursor: pointer; }
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; display: flex; align-items: center; justify-content: center; }
-.modal-card { background: #fff; border-radius: var(--radius); padding: 24px; width: 100%; max-width: 420px; }
+.modal-card { background: #fff; border-radius: var(--radius); padding: 24px; width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto; }
 .modal-card h3 { margin-bottom: 16px; color: var(--brown); }
 .modal-card label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--light-text); margin-bottom: 4px; margin-top: 10px; font-weight: 600; }
-.modal-card input, .modal-card select { width: 100%; border: 2px solid var(--warm); border-radius: 8px; padding: 9px 12px; font-size: 13px; margin-bottom: 4px; }
+.modal-card input, .modal-card select { width: 100%; border: 2px solid var(--warm); border-radius: 8px; padding: 9px 12px; font-size: 13px; margin-bottom: 4px; outline: none; }
+.modal-card input:focus, .modal-card select:focus { border-color: var(--red); }
 .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
-.btn-save { flex: 1; background: var(--red); color: #fff; border: none; border-radius: 8px; padding: 10px; font-weight: 700; cursor: pointer; }
-.btn-cancel { flex: 1; background: var(--warm); color: var(--text); border: none; border-radius: 8px; padding: 10px; cursor: pointer; }
+.btn-save { flex: 1; background: var(--red); color: #fff; border: none; border-radius: 8px; padding: 10px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.btn-save:disabled { opacity: 0.6; }
+.btn-cancel { flex: 1; background: var(--warm); color: var(--text); border: none; border-radius: 8px; padding: 10px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 .form-error { color: var(--red); font-size: 12px; margin-top: 8px; }
 .admin-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
 .admin-table th, .admin-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--warm); font-size: 14px; }
 .admin-table th { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--light-text); }
 .btn-sm { background: none; border: 1px solid var(--warm); border-radius: 6px; padding: 4px 8px; cursor: pointer; }
 .btn-danger { color: var(--red); border-color: var(--red); }
+hr { border: none; border-top: 1px solid var(--warm); }
 </style>
