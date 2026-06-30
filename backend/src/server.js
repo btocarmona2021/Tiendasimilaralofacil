@@ -115,6 +115,7 @@ app.get('/multitienda/:tenant/api/config', tenantMiddleware, async (req, res) =>
       subtitle: t.subtitle,
       promo: t.promo,
       whatsapp: t.whatsapp,
+      currency: t.currency,
       shipping_free: Number(t.shipping_free),
       shipping_cost: Number(t.shipping_cost),
       info_hours: t.info_hours,
@@ -129,6 +130,8 @@ app.get('/multitienda/:tenant/api/config', tenantMiddleware, async (req, res) =>
       bank_cbu: t.bank_cbu,
       bank_alias: t.bank_alias,
       bank_holder: t.bank_holder,
+      theme_preset: t.theme_preset,
+      wizard_completed: t.wizard_completed,
     });
   } catch { res.json({}); }
 });

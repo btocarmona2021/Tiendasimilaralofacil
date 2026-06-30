@@ -10,6 +10,9 @@
         <h3>🏪 Tienda</h3>
         <label>Nombre</label>
         <input v-model="form.store_name" placeholder="Nombre del negocio">
+        <label>Logo de la tienda</label>
+        <input type="file" accept="image/*" @change="uploadStoreLogo" style="font-size:12px;padding:4px;margin-bottom:6px">
+        <input v-model="form.logo" placeholder="URL del logo (se genera al subir)">
         <label>Rubro</label>
         <select v-model="form.rubro">
           <option value="fiambres">🥩 Fiambrería</option>
@@ -155,6 +158,21 @@ async function uploadMainLogo() {
   }
 }
 
+async function uploadStoreLogo(e) {
+  const file = e.target.files?.[0]
+  if (!file) return
+  const formData = new FormData()
+  formData.append('image', file)
+  try {
+    const { data } = await api.post('/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    form.value.logo = data.url
+  } catch (err) {
+    alert('Error al subir logo: ' + (err.response?.data?.error || err.message))
+  }
+}
+
 async function load() {
   const { data } = await api.get('/settings')
   form.value = Object.keys(data).length ? data : {
@@ -182,8 +200,12 @@ async function load() {
 
 async function save() {
   msg.value = ''
-  await api.put('/settings', form.value)
-  msg.value = '✅ Configuración guardada. Recargá la página para ver los cambios.'
+  try {
+    await api.put('/settings', form.value)
+    msg.value = '✅ Configuración guardada.'
+  } catch (e) {
+    msg.value = '❌ Error al guardar: ' + (e.response?.data?.error || e.message)
+  }
 }
 
 async function cleanData() {
