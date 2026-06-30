@@ -1,9 +1,12 @@
 <template>
-  <div class="product-card" :class="{ 'in-cart': qty > 0 }">
+  <div v-if="!product" class="product-card product-card-empty">
+    <div class="card-body"><p class="card-desc">Producto no disponible</p></div>
+  </div>
+  <div v-else class="product-card" :class="{ 'in-cart': qty > 0 }">
     <div class="card-image" @click="$emit('show-detail', product)">
       <img v-if="product.image" :src="product.image" :alt="product.name" />
       <div v-else class="card-placeholder">
-        <span class="card-emoji-big">{{ product.emoji }}</span>
+        <span class="card-emoji-big">{{ product.emoji || '📦' }}</span>
       </div>
       <button class="card-add-mini" v-if="qty === 0" @click.stop="$emit('changeQty', product.id, 1)">+</button>
       <div class="card-qty" v-if="qty > 0">

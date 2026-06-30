@@ -151,7 +151,7 @@ const isAdmin = computed(() => route.path.includes('/admin'))
 
 const cart = useCartStore()
 
-const rubro = ref('ferreteria')
+const rubro = ref('herramientas')
 const dbSettings = ref({})
 const preset = computed(() => {
   const s = dbSettings.value
@@ -199,10 +199,9 @@ const showPuntos = ref(false)
 const codigoCanje = ref('')
 
 const filteredCategories = computed(() => {
-  const cats = config.value.categories.filter(c =>
-    getProducts(c.slug).length > 0
-  )
-  return cats
+  const cats = config.value.categories
+  if (!Array.isArray(cats)) return []
+  return cats.filter(c => getProducts(c.slug).length > 0)
 })
 
 const waLink = computed(() => {
@@ -231,6 +230,7 @@ const cssVars = computed(() => ({
 }))
 
 function getProducts(catSlug) {
+  if (!Array.isArray(products.value)) return []
   let filtered = products.value.filter(p => p.category_slug === catSlug)
   if (searchQuery.value.trim()) {
     const q = searchQuery.value.toLowerCase().trim()
@@ -280,9 +280,9 @@ async function loadData() {
     api.get('/reviews').catch(() => ({ data: [] })),
     api.get('/config').catch(() => null),
   ])
-  products.value = pData.data
-  combos.value = cData.data
-  reviews.value = rData.data
+  products.value = Array.isArray(pData.data) ? pData.data : []
+  combos.value = Array.isArray(cData.data) ? cData.data : []
+  reviews.value = Array.isArray(rData.data) ? rData.data : []
 
   if (cfgData?.data) {
     const s = cfgData.data
@@ -291,16 +291,17 @@ async function loadData() {
     document.title = s.store_name || document.title
   }
 
-  if (config.value.categories.length > 0 && !activeTab.value) {
-    activeTab.value = config.value.categories[0].slug
+  const cats = config.value.categories
+  if (Array.isArray(cats) && cats.length > 0 && !activeTab.value) {
+    activeTab.value = cats[0].slug
   }
 
   const pMap = {}
-  products.value.forEach(p => { pMap[p.id] = p })
+  if (Array.isArray(products.value)) products.value.forEach(p => { pMap[p.id] = p })
   cart.setProductsMap(pMap)
 
   const cMap = {}
-  combos.value.forEach(c => { cMap[c.id] = c })
+  if (Array.isArray(combos.value)) combos.value.forEach(c => { cMap[c.id] = c })
   cart.setCombosMap(cMap)
 }
 
@@ -377,6 +378,7 @@ function checkPaymentStatus() {
 }
 
 onMounted(async () => {
+  if (route.name === 'landing') return
   checkPaymentStatus()
   await loadData()
   cargarCliente()
